@@ -11,7 +11,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>1eb863c0-cefa-40c6-b206-f5706c2799d2</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>server.js</StartupFile>
+    <StartupFile>bin\www</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -28,9 +28,46 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="server.js" />
+    <Compile Include="app.js" />
+    <Compile Include="auth\passport.js" />
+    <Compile Include="config.js" />
+    <Compile Include="models\user.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="public\javascripts\ajax-engine.js" />
+    <Compile Include="public\javascripts\bootstrap\bootstrap.min.js" />
+    <Compile Include="public\javascripts\jquery\jquery-3.2.0.min.js" />
+    <Compile Include="public\javascripts\nanobar\nanobar.min.js" />
+    <Compile Include="public\javascripts\simeonevilardoweb.js" />
+    <Compile Include="routes\index.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Content Include="bin\www" />
     <Content Include="package.json" />
+    <Content Include="public\images\home-bg.jpg" />
+    <Content Include="public\stylesheets\bootstrap\bootstrap.min.css" />
+    <Content Include="public\stylesheets\simeonevilardoweb.css" />
     <Content Include="README.md" />
+    <Content Include="views\error.pug" />
+    <Content Include="views\home.pug" />
+    <Content Include="views\layout.pug" />
+    <Content Include="views\login.pug" />
+    <Content Include="views\signup.pug" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\" />
+    <Folder Include="auth\" />
+    <Folder Include="models\" />
+    <Folder Include="public\images\" />
+    <Folder Include="public\javascripts\" />
+    <Folder Include="public\javascripts\bootstrap\" />
+    <Folder Include="public\javascripts\jquery\" />
+    <Folder Include="public\javascripts\nanobar\" />
+    <Folder Include="public\stylesheets\" />
+    <Folder Include="public\stylesheets\bootstrap\" />
+    <Folder Include="views\" />
+    <Folder Include="public\" />
+    <Folder Include="routes\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

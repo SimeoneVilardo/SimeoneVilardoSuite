@@ -1,0 +1,26 @@
+.container
+  .row
+    .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
+      form(action='/signup', method='post')
+        .form-horizontal
+          h4 Registrati
+          hr
+          .form-group
+            label.control-label.col-md-4(for='Username') Username
+            .col-md-8
+              input#Username.form-control.text-box.single-line(name='username', type='text')
+          .form-group
+            label.control-label.col-md-4(for='Email') Email
+            .col-md-8
+              input#Email.form-control.text-box.single-line(name='email', type='email')
+          .form-group
+            label.control-label.col-md-4(for='Password') Password
+            .col-md-8
+              input#Password.form-control.text-box.single-line.password(name='password', type='password')
+          .form-group
+            label.control-label.col-md-4(for='ConfirmPassword') Conferma Password
+            .col-md-8
+              input#ConfirmPassword.form-control.text-box.single-line.password(name='confirmPassword', type='password')
+          .form-group
+            .col-md-offset-4.col-md-8
+              input.btn.btn-default(type='submit', value='Conferma')

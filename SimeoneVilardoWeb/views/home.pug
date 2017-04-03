@@ -1,0 +1,37 @@
+.container
+  .row
+    .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
+      .post-preview
+        a(href='#')
+          h2.post-title  Nuovo Blog
+          h3.post-subtitle  Si &egrave; nuovo e bello
+        p.post-meta
+          | Posted by 
+          a(href='#') Simeone Vilardo
+          |  il 1/1/0001 12:00:00 AM
+      hr
+      .post-preview
+        a(href='#')
+          h2.post-title  Balla balla
+          h3.post-subtitle  Ananananana
+        p.post-meta
+          | Posted by 
+          a(href='#') Simeone Vilardo
+          |  il 1/1/0001 12:00:00 AM
+      hr
+      .post-preview
+        a(href='#')
+          h2.post-title  Banana
+          h3.post-subtitle  Mela pera arancia
+        p.post-meta
+          | Posted by 
+          a(href='#') Simeone Vilardo
+          |  il 1/1/0001 12:00:00 AM
+      hr
+      ul.pager
+        li.next
+          a(href='#') Older Posts &rarr;
+          |  
+          a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/login') Login
+script.
+  updateBrowserData('Home', '#{partialView.url}', #{partialView.ajax}, #{partialView.back});     

@@ -1,0 +1,69 @@
+doctype html
+html
+  head
+    meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title #{title} - SimeoneVilardo
+    link(rel='stylesheet', type='text/css', href='/stylesheets/bootstrap/bootstrap.min.css')
+    link(href='/stylesheets/simeonevilardoweb.css', rel='stylesheet')
+    script(src='/javascripts/jquery/jquery-3.2.0.min.js')
+    script(src='/javascripts/simeonevilardoweb.js')
+  body
+    nav.navbar.navbar-default.navbar-custom.navbar-fixed-top
+      .container-fluid
+        .navbar-header.page-scroll
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
+            span.sr-only Toggle navigation
+            |  Menu
+            i.fa.fa-bars
+          |  
+          a.navbar-brand(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/') Simeone Vilardo
+        #bs-example-navbar-collapse-1.collapse.navbar-collapse
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/login') Accedi
+            li
+              a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/signup') Registrati
+            li
+              a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/about') Informazioni
+            li
+              a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/contact') Contattami
+            li
+              a(href='https://github.com/SimeoneVilardo/SimeoneVilardoSuite') Source
+    header.intro-header(style="background-image: url('/images/home-bg.jpg')")
+      .container
+        .row
+          .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
+            .site-heading
+              h1 Simeone Vilardo
+              hr.small
+              |  
+              span.subheading Blog in costruzione...
+    #body-content
+      div !{partialView}
+    hr
+    footer
+      .container
+        .row
+          .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
+            ul.list-inline.text-center
+              li
+                a(href='#')
+                  span.fa-stack.fa-lg
+                    i.fa.fa-circle.fa-stack-2x
+                    i.fa.fa-twitter.fa-stack-1x.fa-inverse
+              li
+                a(href='#')
+                  span.fa-stack.fa-lg
+                    i.fa.fa-circle.fa-stack-2x
+                    i.fa.fa-facebook.fa-stack-1x.fa-inverse
+              li
+                a(href='#')
+                  span.fa-stack.fa-lg
+                    i.fa.fa-circle.fa-stack-2x
+                    i.fa.fa-github.fa-stack-1x.fa-inverse
+            p.copyright.text-muted Copyright &copy; Simeone Vilardo 2017
+    script(src='/javascripts/bootstrap/bootstrap.min.js')
+    script(src='/javascripts/nanobar/nanobar.min.js')
+    script(src='/javascripts/ajax-engine.js')

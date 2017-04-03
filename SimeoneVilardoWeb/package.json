@@ -1,0 +1,9 @@
+{
+  "name": "simeone-vilardo-web",
+  "version": "0.0.0",
+  "description": "SimeoneVilardoWeb",
+  "main": "server.js",
+  "author": {
+    "name": "Simeone"
+  }
+}

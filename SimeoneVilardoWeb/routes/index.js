@@ -1,4 +1,5 @@
 ﻿var pug = require('pug');
+var path = require('path');
 
 module.exports = function (router, passport) {
 
@@ -21,6 +22,12 @@ module.exports = function (router, passport) {
     }));
 
     router.get('/signup', hybridEngine, function (req, res, next) {
+        res.render(req.view, {
+            partialView: req.partialView
+        });
+    });
+
+    router.get('/test/test', hybridEngine, function (req, res, next) {
         res.render(req.view, {
             partialView: req.partialView
         });
@@ -50,13 +57,16 @@ function hybridEngine(req, res, next) {
             back: req.back,
             message: req.flash('message')
         };
+        var splittedUrl = req.url.split('?')[0];
+        if (splittedUrl.split('/').length - 1 === 1) splittedUrl = splittedUrl.replace('/', '/index/');
         if (req.ajax) { // Se è ajax
-            req.view = req.url === '/' ? 'home' : req.url.split('?')[0].replace('/', '').toLowerCase(); //Imposto il nome della view
+            req.view = req.url === '/' ? 'index/home' : splittedUrl.replace('/', '').toLowerCase(); //Imposto il nome della view
             req.partialView = partialViewOptions;
         }
         else {
             req.view = 'layout';
-            req.partialViewPath = __dirname + '/../views' + (req.url === '/' ? '/home' : req.url.split('?')[0]) + '.pug';
+            if (splittedUrl === '/index/') splittedUrl = '/index/home';
+            req.partialViewPath = path.join(__dirname, '..', 'views', splittedUrl) + '.pug';
             req.partialView = pug.renderFile(req.partialViewPath, {
                 partialView: partialViewOptions
             });

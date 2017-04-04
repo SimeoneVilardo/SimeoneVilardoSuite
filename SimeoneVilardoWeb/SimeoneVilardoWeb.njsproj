@@ -48,11 +48,11 @@
     <Content Include="public\stylesheets\bootstrap\bootstrap.min.css" />
     <Content Include="public\stylesheets\simeonevilardoweb.css" />
     <Content Include="README.md" />
-    <Content Include="views\error.pug" />
-    <Content Include="views\home.pug" />
+    <Content Include="views\index\error.pug" />
+    <Content Include="views\index\home.pug" />
     <Content Include="views\layout.pug" />
-    <Content Include="views\login.pug" />
-    <Content Include="views\signup.pug" />
+    <Content Include="views\index\login.pug" />
+    <Content Include="views\index\signup.pug" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
@@ -68,6 +68,7 @@
     <Folder Include="views\" />
     <Folder Include="public\" />
     <Folder Include="routes\" />
+    <Folder Include="views\index\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

@@ -16,7 +16,7 @@
           .form-group
             .col-md-offset-2.col-md-10
               input.btn.btn-default(type='submit', value='Accedi')
-          if partialView.passportMessage
-            .alert.alert.danger #{partialView.passportMessage}
+          if passportMessage
+            .alert.alert.danger #{passportMessage}
 script.
-  updateBrowserData('Login', '#{partialView.url}', #{partialView.ajax}, #{partialView.back});
+  updateBrowserData('Login', '#{url}', #{ajax}, #{back});

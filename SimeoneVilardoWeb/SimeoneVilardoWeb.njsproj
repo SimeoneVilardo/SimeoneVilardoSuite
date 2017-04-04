@@ -31,6 +31,9 @@
     <Compile Include="app.js" />
     <Compile Include="auth\passport.js" />
     <Compile Include="config.js" />
+    <Compile Include="helpers\utility-helper.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="models\user.js">
       <SubType>Code</SubType>
     </Compile>
@@ -48,7 +51,7 @@
     <Content Include="public\stylesheets\bootstrap\bootstrap.min.css" />
     <Content Include="public\stylesheets\simeonevilardoweb.css" />
     <Content Include="README.md" />
-    <Content Include="views\index\error.pug" />
+    <Content Include="views\error.pug" />
     <Content Include="views\index\home.pug" />
     <Content Include="views\layout.pug" />
     <Content Include="views\index\login.pug" />
@@ -58,6 +61,7 @@
     <Folder Include="bin\" />
     <Folder Include="auth\" />
     <Folder Include="models\" />
+    <Folder Include="helpers\" />
     <Folder Include="public\images\" />
     <Folder Include="public\javascripts\" />
     <Folder Include="public\javascripts\bootstrap\" />

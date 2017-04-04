@@ -3,16 +3,12 @@ var path = require('path');
 
 module.exports = function (router, passport) {
 
-    router.get('/', hybridEngine, function (req, res, next) {
-        res.render(req.view, {
-            partialView: req.partialView
-        });
+    router.get('/', function (req, res, next) {
+        res.renderHybrid('index/home');
     });
 
-    router.get('/login', hybridEngine, function (req, res, next) {
-        res.render(req.view, {
-            partialView: req.partialView
-        });
+    router.get('/login', function (req, res, next) {
+        res.renderHybrid('index/login', { passportMessage: req.flash('passportMessage') });
     });
 
     router.post('/login', passport.authenticate('local-login', {
@@ -21,16 +17,12 @@ module.exports = function (router, passport) {
         failureFlash: true
     }));
 
-    router.get('/signup', hybridEngine, function (req, res, next) {
-        res.render(req.view, {
-            partialView: req.partialView
-        });
+    router.get('/signup', function (req, res, next) {
+        res.renderHybrid('index/signup', { passportMessage: req.flash('passportMessage') });
     });
 
-    router.get('/test/test', hybridEngine, function (req, res, next) {
-        res.render(req.view, {
-            partialView: req.partialView
-        });
+    router.get('/test', function (req, res, next) {
+        res.renderHybrid('test/test');
     });
 
     router.post('/signup', passport.authenticate('local-signup', {
@@ -45,32 +37,4 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
         return next();
     res.redirect('/');
-}
-
-function hybridEngine(req, res, next) {
-    if (/(?:\.([^.]+))?$/.exec(req.url)[1] === undefined) { //Verifico che l'url richiesto non abbia estensioni, perchè in quel caso sarà una risorsa e non serve usare il motore ibrido
-        req.back = req.headers['back-req'] ? true : false;
-        req.ajax = req.xhr ? true : false;
-        var partialViewOptions = {
-            ajax: req.ajax,
-            url: req.url,
-            back: req.back,
-            message: req.flash('message')
-        };
-        var splittedUrl = req.url.split('?')[0];
-        if (splittedUrl.split('/').length - 1 === 1) splittedUrl = splittedUrl.replace('/', '/index/');
-        if (req.ajax) { // Se è ajax
-            req.view = req.url === '/' ? 'index/home' : splittedUrl.replace('/', '').toLowerCase(); //Imposto il nome della view
-            req.partialView = partialViewOptions;
-        }
-        else {
-            req.view = 'layout';
-            if (splittedUrl === '/index/') splittedUrl = '/index/home';
-            req.partialViewPath = path.join(__dirname, '..', 'views', splittedUrl) + '.pug';
-            req.partialView = pug.renderFile(req.partialViewPath, {
-                partialView: partialViewOptions
-            });
-        }
-    }
-    next();
 }

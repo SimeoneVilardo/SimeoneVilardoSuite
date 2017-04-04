@@ -24,7 +24,7 @@
           .form-group
             .col-md-offset-4.col-md-8
               input.btn.btn-default(type='submit', value='Conferma')
-          if partialView.passportMessage
-            .alert.alert.danger #{partialView.passportMessage}
+          if passportMessage
+            .alert.alert.danger #{passportMessage}
 script.
-  updateBrowserData('Registrati', '#{partialView.url}', #{partialView.ajax}, #{partialView.back});
+  updateBrowserData('Registrati', '#{url}', #{ajax}, #{back});

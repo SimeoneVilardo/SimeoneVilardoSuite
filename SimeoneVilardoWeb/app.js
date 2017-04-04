@@ -11,13 +11,26 @@ mongoose.Promise = bluebird;
 var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
-
+var utilityHelper = require('./helpers/utility-helper.js');
 var config = require('./config.js');
 
 mongoose.connect(config.mongodb.connection_string);
 require('./auth/passport')(passport);
 
 var app = express();
+
+app.use(function (req, res, next) {
+    res.renderHybrid = function (view, locals, callback) {
+        req.back = req.headers['back-req'] ? true : false;
+        req.ajax = req.xhr ? true : false;
+        locals = utilityHelper.extend(locals, { ajax: req.ajax, url: req.url, back: req.back });
+        if (req.ajax)
+            res.render(view, locals, callback);
+        else
+            res.render(config.views.layout, { partialView: pug.renderFile(path.join(__dirname, config.views.dir, view) + config.views.ext, locals) }, callback);
+    };
+    next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,15 +43,14 @@ app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.json()); // get information from html forms
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(session({
     secret: config.session.secret,
     resave: true,
     saveUninitialized: true
 }));
 app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
+app.use(passport.session());
+app.use(flash());
 
 require('./routes/index.js')(app, passport);
 
@@ -59,7 +71,7 @@ if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
-            message: err.message,
+            errMessage: err.message,
             error: err
         });
     });
@@ -70,7 +82,7 @@ if (app.get('env') === 'development') {
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
-        message: err.message,
+        errMessage: err.message,
         error: {}
     });
 });

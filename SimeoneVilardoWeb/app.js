@@ -31,7 +31,7 @@ app.use(function (req, res, next) {
         if (req.ajax)
             res.render(view, locals, callback);
         else
-            res.render(config.views.layout, { partialView: pug.renderFile(path.join(__dirname, config.views.dir, view) + config.views.ext, locals) }, callback);
+            res.render(config.views.layout, { partialView: pug.renderFile(path.join(__dirname, config.views.dir, view) + config.views.ext, locals), currentUser:req.user }, callback);
     };
     next();
 });

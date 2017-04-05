@@ -14,15 +14,19 @@ var session = require('express-session');
 var utilityHelper = require('./helpers/utility-helper.js');
 var config = require('./config.js');
 
-mongoose.connect(config.mongodb.connection_string);
+mongoose.connect(config.mongodb.connection_string).then(function () {
+    console.log('Connessione a MongoLab riuscita');
+}).catch(function () {
+    console.log('Connessione a MongoLab fallita');
+});
 require('./auth/passport')(passport);
 
 var app = express();
 
 app.use(function (req, res, next) {
     res.renderHybrid = function (view, locals, callback) {
-        req.back = req.headers['back-req'] ? true : false;
-        req.ajax = req.xhr ? true : false;
+        req.back = !!req.headers['back-req'];
+        req.ajax = !!req.xhr;
         locals = utilityHelper.extend(locals, { ajax: req.ajax, url: req.url, back: req.back });
         if (req.ajax)
             res.render(view, locals, callback);
@@ -70,7 +74,7 @@ app.use(function (req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
-        res.render('error', {
+        res.renderHybrid('error', {
             errMessage: err.message,
             error: err
         });
@@ -81,7 +85,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
+    res.renderHybrid('error', {
         errMessage: err.message,
         error: {}
     });

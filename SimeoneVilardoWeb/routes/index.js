@@ -1,8 +1,8 @@
 ﻿var pug = require('pug');
 var path = require('path');
+var securityHelper = require('../helpers/security-helper.js');
 
 module.exports = function (router, passport) {
-
     router.get('/', function (req, res, next) {
         res.renderHybrid('index/home');
     });
@@ -21,7 +21,7 @@ module.exports = function (router, passport) {
         res.renderHybrid('index/signup', { passportMessage: req.flash('passportMessage') });
     });
 
-    router.get('/test', function (req, res, next) {
+    router.get('/test', securityHelper.isLogged, function(req, res, next) {
         res.renderHybrid('test/test');
     });
 
@@ -31,10 +31,3 @@ module.exports = function (router, passport) {
         failureFlash: true // allow flash messages
     }));
 };
-
-// route middleware to ensure user is logged in
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())
-        return next();
-    res.redirect('/');
-}

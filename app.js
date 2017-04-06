@@ -1,4 +1,5 @@
 var express = require('express');
+var helmet = require('helmet')
 var path = require('path');
 //var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -23,6 +24,7 @@ mongoose.connect(config.mongodb.connection_string).then(function () {
 require('./auth/passport')(passport);
 
 var app = express();
+app.use(helmet());
 
 app.use(function (req, res, next) {
     res.renderHybrid = function (view, locals, callback) {

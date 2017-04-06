@@ -1,5 +1,5 @@
 var LocalStrategy = require('passport-local').Strategy;
-var bcrypt = require('bcrypt-nodejs');
+var securityHelper = require('../helpers/security-helper.js');
 var User = require('../models/user');
 var dbHelper = require('../helpers/database-helper.js');
 
@@ -29,7 +29,7 @@ module.exports = function (passport) {
                     var newUser = new User();
                     newUser.username = username;
                     newUser.email = req.body.email;
-                    newUser.password = newUser.generateHash(password);
+                    newUser.password = securityHelper.hashPassword(password);
                     return newUser.save();
                 }
             }).then(function (newUser) {
@@ -48,7 +48,7 @@ module.exports = function (passport) {
             dbHelper.findUser({username: username}).then(function (user) {
                 if (!user)
                     return done(null, false, req.flash('passportMessage', 'Utente non trovato'));
-                if (!bcrypt.compareSync(password, user.password))
+                if (!securityHelper.checkPassword(password, user.password))
                     return done(null, false, req.flash('passportMessage', 'Password errata'));
                 return done(null, user);
             }).catch(function (err) {

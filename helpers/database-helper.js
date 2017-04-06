@@ -5,4 +5,8 @@ dbHelper.findUser = function (query, fields) {
     return User.findOne(query).select(fields).lean().exec();
 };
 
+dbHelper.createPost = function (query, fields) {
+
+};
+
 module.exports = dbHelper;

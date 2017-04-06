@@ -1,0 +1,20 @@
+.container
+    form(data-ajax='true', method='post', data-ajax-mode='replace', data-ajax-target='#body-content', action='/blog/createpost')
+        input#title.form-control.text-box.single-line(name='title', type='text', value= post ? post.title : '')
+        textarea(name='content')
+        //input#txtPostBody(name='content', type='hidden')
+        input#btnSubmit.btn.btn-default(type='submit')
+script.
+    updateBrowserData('Crea Post', '#{url}', #{ajax}, #{back});
+    $(document).ready(function () {
+        console.log(CKEDITOR.instances);
+        CKEDITOR.replace('content');
+        CKEDITOR.on("instanceReady", function (e) {
+            var post = !{JSON.stringify(post || {}).replace(/<\//g, '<\\/')};
+            console.log(post);
+            CKEDITOR.instances['content'].setData(post.content);
+        });
+        $('#btnSubmit').click(function () {
+            CKEDITOR.instances['content'].updateElement();
+        });
+    });

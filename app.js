@@ -57,6 +57,7 @@ app.use(passport.session());
 app.use(flash());
 
 require('./routes/index.js')(app, passport);
+require('./routes/blog.js')(app, passport);
 
 //app.use('/', index);
 

@@ -11,6 +11,7 @@ mongoose.Promise = bluebird;
 var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 var utilityHelper = require('./helpers/utility-helper.js');
 var config = require('./config.js');
 
@@ -49,6 +50,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: config.session.secret,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
     resave: true,
     saveUninitialized: true
 }));

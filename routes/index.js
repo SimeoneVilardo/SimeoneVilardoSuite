@@ -1,10 +1,16 @@
 ﻿var pug = require('pug');
 var path = require('path');
 var securityHelper = require('../helpers/security-helper.js');
+var dbHelper = require('../helpers/database-helper.js');
 
 module.exports = function (router, passport) {
     router.get('/', function (req, res, next) {
-        res.renderHybrid('index/home');
+        dbHelper.findPosts({validated: true}).then(function (posts) {
+
+            res.renderHybrid('index/home', {posts:posts});
+        }).catch(function (err) {
+            next(err);
+        });
     });
 
     router.get('/login', function (req, res, next) {

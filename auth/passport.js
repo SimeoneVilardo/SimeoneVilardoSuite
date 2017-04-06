@@ -9,7 +9,7 @@ module.exports = function (passport) {
     });
 
     passport.deserializeUser(function (id, done) {
-        dbHelper.findUser({_id: id}, 'username').then(function (user) {
+        dbHelper.findUser({_id: id}).then(function (user) {
             done(null, user);
         }).catch(function (err) {
             done(err, null);

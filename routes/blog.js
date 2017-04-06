@@ -1,4 +1,5 @@
 var securityHelper = require('../helpers/security-helper.js');
+var dbHelper = require('../helpers/database-helper.js');
 
 module.exports = function (router, passport) {
     router.get('/blog/createpost', function (req, res, next) {
@@ -7,6 +8,11 @@ module.exports = function (router, passport) {
 
     router.post('/blog/createpost', function (req, res, next) {
         req.session.post = req.body;
-        res.redirect('/');
+        if(req.isAuthenticated())
+            dbHelper.createPost(req.user, req.session.post).then(function () {
+                res.redirect('/');
+            });
+        else
+            res.redirect('/login');
     });
 };

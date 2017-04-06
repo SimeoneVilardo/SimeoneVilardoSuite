@@ -62,6 +62,7 @@ app.use(flash());
 
 require('./routes/index.js')(app, passport);
 require('./routes/blog.js')(app, passport);
+require('./routes/management.js')(app, passport);
 
 //app.use('/', index);
 

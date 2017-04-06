@@ -1,6 +1,7 @@
 .container
     form(data-ajax='true', method='post', data-ajax-mode='replace', data-ajax-target='#body-content', action='/blog/createpost')
         input#title.form-control.text-box.single-line(name='title', type='text', value= post ? post.title : '')
+        input#subtitle.form-control.text-box.single-line(name='subtitle', type='text', value= post ? post.subtitle : '')
         textarea(name='content')
         //input#txtPostBody(name='content', type='hidden')
         input#btnSubmit.btn.btn-default(type='submit')

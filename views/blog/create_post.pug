@@ -7,13 +7,8 @@
 script.
     updateBrowserData('Crea Post', '#{url}', #{ajax}, #{back});
     $(document).ready(function () {
-        console.log(CKEDITOR.instances);
         CKEDITOR.replace('content');
-        CKEDITOR.on("instanceReady", function (e) {
-            var post = !{JSON.stringify(post || {}).replace(/<\//g, '<\\/')};
-            console.log(post);
-            CKEDITOR.instances['content'].setData(post.content);
-        });
+        CKEDITOR.instances['content'].setData((!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content);
         $('#btnSubmit').click(function () {
             CKEDITOR.instances['content'].updateElement();
         });

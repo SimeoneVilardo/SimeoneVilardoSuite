@@ -10,6 +10,10 @@ dbHelper.findPosts = function (query, fields) {
     return Post.find(query).select(fields).lean().exec();
 };
 
+dbHelper.findPost = function (query, fields) {
+    return Post.findOne(query).select(fields).lean().exec();
+};
+
 dbHelper.createPost = function (user, post) {
     var newPost = new Post();
     newPost.author = {_id: user._id, username: user.username};

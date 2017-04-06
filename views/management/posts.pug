@@ -1,0 +1,30 @@
+.container
+    table.table.table-striped.table-hover.table-posts
+        thead
+            tr
+                th Titolo
+                th Autore
+                th Convalidato
+                th Data creazione
+                th
+                th
+        tbody
+            tr
+                if posts && posts.length > 0
+                    each post in posts
+                        td #{post.title}
+                        td #{post.author.username}
+                        td
+                            if post.validated
+                                span.label.label-success Convalidato
+                            else
+                                span.label.label-warning Non convalidato
+                        td #{post.creationDate.toLocaleString('it-IT', { hour12: false })}
+                        td
+                            a.btn.btn-info(href='#')
+                                i.fa.fa-eye.fa-lg
+                        td
+                            a.btn.btn-danger(href='#')
+                                i.fa.fa-trash-o.fa-lg
+script.
+    updateBrowserData('Gestione post', '#{url}', #{ajax}, #{back});

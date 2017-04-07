@@ -10,6 +10,7 @@ script.
     $(document).ready(function () {
         CKEDITOR.replace('content');
         CKEDITOR.instances['content'].setData((!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content);
+
         $('#btnSubmit').click(function () {
             CKEDITOR.instances['content'].updateElement();
         });

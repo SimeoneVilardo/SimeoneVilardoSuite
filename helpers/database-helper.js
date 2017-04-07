@@ -20,7 +20,7 @@ dbHelper.createPost = function (user, post) {
     newPost.title = post.title;
     newPost.subtitle = post.subtitle;
     newPost.content = post.content;
-    newPost.validated = user.admin;
+    newPost.validated = !!user.admin;
     if(newPost.validated)
         newPost.validationDate = Date.now();
     return newPost.save();

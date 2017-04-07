@@ -1,6 +1,7 @@
 /*global $*/
 
 $(document).on('click', 'a[data-ajax*="true"]', function(e) {
+    alert('click');
     var sender = $(e.target);
     var method = sender.data('ajax-method');
     var mode = sender.data('ajax-mode');

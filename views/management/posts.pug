@@ -9,9 +9,9 @@
                 th
                 th
         tbody
-            tr
-                if posts && posts.length > 0
-                    each post in posts
+            if posts && posts.length > 0
+                each post in posts
+                    tr
                         td #{post.title}
                         td #{post.author.username}
                         td

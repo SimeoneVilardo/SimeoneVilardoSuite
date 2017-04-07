@@ -27,4 +27,8 @@ utilityHelper.extend = function () {
     return extended;
 };
 
+utilityHelper.createExpDate = function (num, size) {
+    return new Date(Date.now() + num * size);
+};
+
 module.exports = utilityHelper;

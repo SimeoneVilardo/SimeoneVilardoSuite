@@ -54,7 +54,8 @@ app.use(session({
     secret: config.session.secret,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: { expires: utilityHelper.createExpDate(1, config.sizedate.week) }
 }));
 app.use(passport.initialize());
 app.use(passport.session());

@@ -30,6 +30,9 @@ html
             else
               li
                 a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/profile') #{currentUser.username}
+                if currentUser.admin
+                  li
+                    a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/posts') Gestionale
               li
                 a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/logout') Esci
             li

@@ -7,6 +7,7 @@ html
     title #{title} - SimeoneVilardo
     link(rel='stylesheet', type='text/css', href='/stylesheets/bootstrap/bootstrap.min.css')
     link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+    link(href='https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css', rel='stylesheet')
     link(href='/stylesheets/simeonevilardoweb.css', rel='stylesheet')
     script(src='/javascripts/jquery/jquery-3.2.0.min.js')
     script(src='/javascripts/simeonevilardoweb.js')
@@ -32,7 +33,7 @@ html
                 a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/profile') #{currentUser.username}
                 if currentUser.admin
                   li
-                    a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/posts') Gestionale
+                    a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/listposts') Gestionale
               li
                 a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/logout') Esci
             li
@@ -42,7 +43,7 @@ html
             li
               a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/createpost') Crea Post
             li
-              a(href='https://github.com/SimeoneVilardo/SimeoneVilardoSuite') Source
+              a(href='https://github.com/SimeoneVilardo/SimeoneVilardoWeb') Source
     header.intro-header(style="background-image: url('/images/home-bg.jpg')")
       .container
         .row
@@ -79,4 +80,5 @@ html
     script(src='/javascripts/bootstrap/bootstrap.min.js')
     script(src='/javascripts/nanobar/nanobar.min.js')
     script(src='//cdn.ckeditor.com/4.6.2/standard/ckeditor.js')
+    script(src='//gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js')
     script(src='/javascripts/ajax-engine.js')

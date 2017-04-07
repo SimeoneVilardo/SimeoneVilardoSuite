@@ -1,8 +1,7 @@
 /*global $*/
 
 $(document).on('click', 'a[data-ajax*="true"]', function(e) {
-    alert('click');
-    var sender = $(e.target);
+    var sender = $(e.currentTarget);
     var method = sender.data('ajax-method');
     var mode = sender.data('ajax-mode');
     var targetId = sender.data('ajax-target');
@@ -31,7 +30,7 @@ $(document).on('click', 'a[data-ajax*="true"]', function(e) {
 });
 
 $(document).on('submit', 'form[data-ajax*="true"]', function(e) {
-    var sender = $(e.target);
+    var sender = $(e.currentTarget);
     var method = sender.attr('method');
     var mode = sender.data('ajax-mode');
     var targetId = sender.data('ajax-target');

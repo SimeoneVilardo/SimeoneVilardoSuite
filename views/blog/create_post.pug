@@ -3,7 +3,7 @@
         input#title.form-control.text-box.single-line(name='title', type='text', value= post ? post.title : '')
         input#subtitle.form-control.text-box.single-line(name='subtitle', type='text', value= post ? post.subtitle : '')
         textarea(name='content')
-        //input#txtPostBody(name='content', type='hidden')
+        input(type='hidden', name='_id', value= post ? post._id : '')
         input#btnSubmit.btn.btn-default(type='submit')
 script.
     updateBrowserData('Crea Post', '#{url}', #{ajax}, #{back});

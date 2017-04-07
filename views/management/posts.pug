@@ -1,34 +1,35 @@
 .container
-    table.table.table-striped.table-hover.table-posts
-        thead
-            tr
-                th Titolo
-                th Autore
-                th Convalidato
-                th Data creazione
-                th
-                th
-                th
-        tbody
-            if posts && posts.length > 0
-                each post in posts
-                    tr
-                        td #{post.title}
-                        td #{post.author.username}
-                        td
-                            if post.validated
-                                span.label.label-success Convalidato
-                            else
-                                span.label.label-warning Non convalidato
-                        td #{post.creationDate.toLocaleString('it-IT', { hour12: false })}
-                        td
-                            a.btn.btn-info(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/post?postId=' + post._id)
-                                i.fa.fa-eye.fa-lg
-                        td
-                            a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/editpost?postId=' + post._id)
-                                i.fa.fa-pencil.fa-lg
-                        td
-                            a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/deletepost?postId=' + post._id)
-                                i.fa.fa-trash-o.fa-lg
+    .table-responsive
+        table.table.table-striped.table-hover.table-posts
+            thead
+                tr
+                    th Titolo
+                    th Autore
+                    th Convalidato
+                    th Data creazione
+                    th
+                    th
+                    th
+            tbody
+                if posts && posts.length > 0
+                    each post in posts
+                        tr
+                            td #{post.title}
+                            td #{post.author.username}
+                            td
+                                if post.validated
+                                    span.label.label-success Convalidato
+                                else
+                                    span.label.label-warning Non convalidato
+                            td #{post.creationDate.toLocaleString('it-IT', { hour12: false })}
+                            td
+                                a.btn.btn-info(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/post?postId=' + post._id)
+                                    i.fa.fa-eye.fa-lg
+                            td
+                                a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/editpost?postId=' + post._id)
+                                    i.fa.fa-pencil.fa-lg
+                            td
+                                a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/deletepost?postId=' + post._id)
+                                    i.fa.fa-trash-o.fa-lg
 script.
     updateBrowserData('Gestione post', '#{url}', #{ajax}, #{back}, #{noUpdate});

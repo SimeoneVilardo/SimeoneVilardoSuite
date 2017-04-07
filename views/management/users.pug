@@ -1,38 +1,39 @@
 .container
-    table.table.table-striped.table-hover.table-posts
-        thead
-            tr
-                th Username
-                th Email
-                th Convalidato
-                th Ruolo
-                th Data creazione
-                th
-                th
-                th
-        tbody
-            if users && users.length > 0
-                each user in users
-                    tr
-                        td #{user.username}
-                        td #{user.email}
-                        td
-                            if user.validated
-                                span.label.label-success Convalidato
-                            else
-                                user.label.label-warning Non convalidato
-                        each role in roles
-                            if role.code == user.role
-                                td #{role.name}
-                        td #{user.creationDate.toLocaleString('it-IT', { hour12: false })}
-                        td
-                            a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/edituser?id=' + user._id)
-                                i.fa.fa-pencil.fa-lg
-                        td
-                            a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/blockuser?id=' + user._id)
-                                i.fa.fa-ban.fa-lg
-                        td
-                            a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/deleteuser?id=' + user._id)
-                                i.fa.fa-trash-o.fa-lg
+    .table-responsive
+        table.table.table-striped.table-hover.table-posts
+            thead
+                tr
+                    th Username
+                    th Email
+                    th Convalidato
+                    th Ruolo
+                    th Data creazione
+                    th
+                    th
+                    th
+            tbody
+                if users && users.length > 0
+                    each user in users
+                        tr
+                            td #{user.username}
+                            td #{user.email}
+                            td
+                                if user.validated
+                                    span.label.label-success Convalidato
+                                else
+                                    user.label.label-warning Non convalidato
+                            each role in roles
+                                if role.code == user.role
+                                    td #{role.name}
+                            td #{user.creationDate.toLocaleString('it-IT', { hour12: false })}
+                            td
+                                a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/edituser?id=' + user._id)
+                                    i.fa.fa-pencil.fa-lg
+                            td
+                                a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/blockuser?id=' + user._id)
+                                    i.fa.fa-ban.fa-lg
+                            td
+                                a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/deleteuser?id=' + user._id)
+                                    i.fa.fa-trash-o.fa-lg
 script.
     updateBrowserData('Gestione utenti', '#{url}', #{ajax}, #{back}, #{noUpdate});

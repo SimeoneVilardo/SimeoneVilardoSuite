@@ -8,7 +8,7 @@ module.exports = function (router, passport) {
     });
 
     router.get('/blog/post', function (req, res, next) {
-        dbHelper.findPost({_id: req.query.postId, validated: req.user && !!req.user.admin}).then(function (post) {
+        dbHelper.findPost({_id: req.query.postId, validated: true}).then(function (post) {
             if (!post)
                 throw errorHelper.pageNotFound();
             res.renderHybrid('blog/post', {post: post});

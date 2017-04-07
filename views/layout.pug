@@ -7,7 +7,8 @@ html
     title #{title} - SimeoneVilardo
     link(rel='stylesheet', type='text/css', href='/stylesheets/bootstrap/bootstrap.min.css')
     link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
-    link(href='https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css', rel='stylesheet')
+    link(href='//gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css', rel='stylesheet')
+    link(href='//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css', rel='stylesheet')
     link(href='/stylesheets/simeonevilardoweb.css', rel='stylesheet')
     script(src='/javascripts/jquery/jquery-3.2.0.min.js')
     script(src='/javascripts/simeonevilardoweb.js')
@@ -35,7 +36,7 @@ html
                   li
                     a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/listposts') Gestionale
               li
-                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/logout') Esci
+                a(href='/logout') Esci
             li
               a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/about') Informazioni
             li
@@ -52,7 +53,7 @@ html
               h1 Simeone Vilardo
               hr.small
               |  
-              span.subheading Blog in costruzione...
+              span.subheading Code and Stuff
     #body-content
       div !{partialView}
     hr
@@ -81,4 +82,5 @@ html
     script(src='/javascripts/nanobar/nanobar.min.js')
     script(src='//cdn.ckeditor.com/4.6.2/standard/ckeditor.js')
     script(src='//gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js')
     script(src='/javascripts/ajax-engine.js')

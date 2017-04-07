@@ -1,6 +1,7 @@
 /*global $*/
 
 $(document).on('click', 'a[data-ajax*="true"]', function(e) {
+    e.preventDefault();
     var sender = $(e.currentTarget);
     var method = sender.data('ajax-method');
     var mode = sender.data('ajax-mode');
@@ -26,10 +27,10 @@ $(document).on('click', 'a[data-ajax*="true"]', function(e) {
                     break;
             }
         });
-    e.preventDefault();
 });
 
 $(document).on('submit', 'form[data-ajax*="true"]', function(e) {
+    e.preventDefault();
     var sender = $(e.currentTarget);
     var method = sender.attr('method');
     var mode = sender.data('ajax-mode');
@@ -57,5 +58,4 @@ $(document).on('submit', 'form[data-ajax*="true"]', function(e) {
                     break;
             }
         });
-    e.preventDefault();
 });

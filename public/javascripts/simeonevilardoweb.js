@@ -45,6 +45,10 @@ jQuery(document).ready(function ($) {
             }
         }
     });
+
+    if($('.selectpicker').length > 0)
+        $('.selectpicker').selectpicker();
+
 });
 
 window.onpopstate = function (e) {
@@ -60,8 +64,10 @@ window.onpopstate = function (e) {
     });
 };
 
-function updateBrowserData(title, url, ajax, back) {
-    if (!back && ajax)
-         window.history.pushState(url, url, url);
-    document.title = title + ' - Simeone Vilardo';
+function updateBrowserData(title, url, ajax, back, noUpdate) {
+    if(!noUpdate){
+        if (!back && ajax)
+            window.history.pushState(url, url, url);
+        document.title = title + ' - Simeone Vilardo';
+    }
 }

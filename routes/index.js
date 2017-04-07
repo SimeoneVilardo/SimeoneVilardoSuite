@@ -27,8 +27,11 @@ module.exports = function (router, passport) {
         res.renderHybrid('index/signup', { passportMessage: req.flash('passportMessage') });
     });
 
-    router.get('/test', securityHelper.isLogged, function(req, res, next) {
-        res.renderHybrid('test/test');
+    router.get('/logout', securityHelper.isLogged, function(req, res, next) {
+        req.session.destroy(function (err) {
+            if(err) return next(err);
+            res.redirect('/'); //Inside a callback… bulletproof!
+        });
     });
 
     router.post('/signup', passport.authenticate('local-signup', {

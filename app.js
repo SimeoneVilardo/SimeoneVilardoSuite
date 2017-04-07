@@ -1,7 +1,6 @@
 var express = require('express');
 var helmet = require('helmet')
 var path = require('path');
-//var favicon = require('serve-favicon');
 var logger = require('morgan');
 var pug = require('pug');
 var cookieParser = require('cookie-parser');
@@ -30,7 +29,7 @@ app.use(function (req, res, next) {
     res.renderHybrid = function (view, locals, callback) {
         req.back = !!req.headers['back-req'];
         req.ajax = !!req.xhr;
-        locals = utilityHelper.extend(locals, { ajax: req.ajax, url: req.url, back: req.back });
+        locals = utilityHelper.extend(locals, { ajax: req.ajax, url: req.url, back: req.back, noUpdate: !!locals.noUpdate });
         if (req.ajax)
             res.render(view, locals, callback);
         else

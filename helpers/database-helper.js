@@ -6,6 +6,10 @@ dbHelper.findUser = function (query, fields) {
     return User.findOne(query).select(fields).lean().exec();
 };
 
+dbHelper.findUsers = function (query, fields) {
+    return User.find(query).select(fields).lean().exec();
+};
+
 dbHelper.findPosts = function (query, fields) {
     return Post.find(query).select(fields).lean().exec();
 };
@@ -16,6 +20,10 @@ dbHelper.findPost = function (query, fields) {
 
 dbHelper.deletePost = function (query) {
     return Post.find(query).remove().exec();
+};
+
+dbHelper.deleteUser = function (query) {
+    return User.find(query).remove().exec();
 };
 
 dbHelper.createPost = function (user, post) {

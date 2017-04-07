@@ -1,0 +1,43 @@
+.container
+    .row
+        .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
+            form(action='/managemet/edituser', method='post')
+                .form-horizontal
+                    h4 Modifica utente
+                    hr
+                    .form-group
+                        label.control-label.col-md-2(for='Username') Username
+                        .col-md-10
+                            input#username.form-control.text-box.single-line(name='username', type='text', value='#{user.username}')
+                    .form-group
+                        label.control-label.col-md-2(for='email') Email
+                        .col-md-10
+                            input#email.form-control.text-box.single-line.email(name='email', type='email', value='#{user.username}')
+                    .form-group
+                        label.control-label.col-md-2(for='password') Password
+                        .col-md-10
+                            input#password.form-control.text-box.single-line.password(name='password', type='password')
+                    .form-group
+                        label.control-label.col-md-2(for='validated') Convalidato
+                        .col-md-10
+                            input#validated(type='checkbox', name='validated' checked= user.validated ? 'true' : 'false', data-toggle='toggle', data-onstyle='success', data-on="Si", data-offstyle='danger', data-off="No")
+                    .form-group
+                        label.control-label.col-md-2(for='role') Ruolo
+                        .col-md-10
+                            select#role.selectpicker(name='role')
+                                each role in roles
+                                    if role.code == user.role
+                                        option(value='#{role.code}', selected) #{role.name}
+                                    else
+                                        option(value='#{role.code}') #{role.name}
+                    .form-group
+                        label.control-label.col-md-2(for='creationDate') Data creazione
+                        .col-md-10
+                            label#creationDate #{user.creationDate.toLocaleString('it-IT', { hour12: false })}
+                    .form-group
+                        .col-md-offset-2.col-md-10
+                            input.btn.btn-default(type='submit', value='Accedi')
+                    if passportMessage
+                        .alert.alert.danger #{passportMessage}
+script.
+    updateBrowserData('#{user.username}', '#{url}', #{ajax}, #{back}, #{noUpdate});

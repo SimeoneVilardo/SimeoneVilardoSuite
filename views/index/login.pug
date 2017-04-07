@@ -16,7 +16,7 @@
           .form-group
             .col-md-offset-2.col-md-10
               input.btn.btn-default(type='submit', value='Accedi')
-          if passportMessage
-            .alert.alert.danger #{passportMessage}
+          include ../alerts.pug
+          +alerts(passportMessage)
 script.
   updateBrowserData('Login', '#{url}', #{ajax}, #{back}, #{noUpdate});

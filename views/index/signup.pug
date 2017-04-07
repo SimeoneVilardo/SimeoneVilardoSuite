@@ -24,7 +24,7 @@
           .form-group
             .col-md-offset-4.col-md-8
               input.btn.btn-default(type='submit', value='Conferma')
-          if passportMessage
-            .alert.alert.danger #{passportMessage}
+          include ../alerts.pug
+          +alerts(passportMessage)
 script.
   updateBrowserData('Registrati', '#{url}', #{ajax}, #{back}, #{noUpdate});

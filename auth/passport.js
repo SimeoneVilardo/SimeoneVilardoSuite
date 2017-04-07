@@ -2,6 +2,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var securityHelper = require('../helpers/security-helper.js');
 var User = require('../models/user');
 var dbHelper = require('../helpers/database-helper.js');
+var mailHelper = require('../helpers/mail-helper.js');
 
 module.exports = function (passport) {
     passport.serializeUser(function (user, done) {
@@ -30,13 +31,17 @@ module.exports = function (passport) {
                     newUser.username = username;
                     newUser.email = req.body.email;
                     newUser.password = securityHelper.hashPassword(password);
-                    return newUser.save();
+                    return [newUser.save(), password];
                 }
-            }).then(function (newUser) {
+            }).spread(function (newUser, password) {
+                return [newUser, mailHelper.sendSignUp(newUser.username, password, newUser.email, newUser.validationToken.token)];
+            }).spread(function (newUser, mailResult) {
+                if(!mailResult.response.startsWith('250'))
+                    return done(null, false, req.flash('passportMessage', 'Errore nell\'invio della mail'));
                 return done(null, newUser);
             }).catch(function (err) {
                 return done(err);
-            });
+            })
         }));
 
     passport.use('local-login', new LocalStrategy({

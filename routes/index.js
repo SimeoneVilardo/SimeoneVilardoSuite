@@ -27,6 +27,14 @@ module.exports = function (router, passport) {
         res.renderHybrid('index/signup', { passportMessage: req.flash('passportMessage') });
     });
 
+    router.get('/validate', function (req, res, next) {
+        securityHelper.validateUser(req.query.token).then(function (result) {
+            res.redirect('/login');
+        }).catch(function (err) {
+            next(err);
+        })
+    });
+//securityHelper.validateUser
     router.get('/logout', securityHelper.isLogged, function(req, res, next) {
         req.session.destroy(function (err) {
             if(err) return next(err);

@@ -1,0 +1,4 @@
+mixin alerts(alerts)
+    if alerts && alerts.length > 0
+        each alert in alerts
+            .alert.alert-danger #{alert}

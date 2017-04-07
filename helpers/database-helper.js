@@ -26,6 +26,11 @@ dbHelper.deleteUser = function (query) {
     return User.find(query).remove().exec();
 };
 
+dbHelper.updateUser = function (query, data) {
+    return User.update(query, data).exec();
+};
+
+
 dbHelper.createPost = function (user, post) {
     var newPost = new Post();
     newPost.author = {_id: user._id, username: user.username};

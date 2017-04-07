@@ -13,13 +13,15 @@ var flash = require('connect-flash');
 var session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 var utilityHelper = require('./helpers/utility-helper.js');
+var mailHelper = require('./helpers/mail-helper.js');
 var config = require('./config.js');
 
 mongoose.connect(config.mongodb.connection_string).then(function () {
-    console.log('Connessione a MongoLab riuscita');
-}).catch(function () {
-    console.log('Connessione a MongoLab fallita');
+    console.log('Connessione a MongoDB riuscita');
+}).catch(function (err) {
+    console.log('Errore connessione a MongoDB', err);
 });
+mailHelper.init();
 require('./auth/passport')(passport);
 
 var app = express();

@@ -19,7 +19,7 @@ module.exports = function (router, passport) {
         });
     });
 
-    router.get('/management/users', function (req, res, next) {
+    router.get('/management/users', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
         dbHelper.findUsers().then(function (users) {
             res.renderHybrid('management/users', {users:users, roles: config.roles});
         }).catch(function (err) {

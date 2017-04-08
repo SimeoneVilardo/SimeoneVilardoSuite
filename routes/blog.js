@@ -4,7 +4,7 @@ var errorHelper = require('../helpers/error-helper.js');
 
 module.exports = function (router, passport) {
     router.get('/blog/createpost', function (req, res, next) {
-        res.renderHybrid('blog/create_post', {post: req.session.post});
+        res.renderHybrid('management/post', {post: req.session.post});
     });
 
     router.get('/blog/post', function (req, res, next) {
@@ -32,6 +32,5 @@ module.exports = function (router, passport) {
             req.session.post = req.body;
             res.redirect('/login');
         }
-
     });
 };

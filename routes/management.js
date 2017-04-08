@@ -11,7 +11,7 @@ module.exports = function (router, passport) {
         });
     });
 
-    router.get('/management/posts', function (req, res, next) {
+    router.get('/management/posts', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
         dbHelper.findPosts().then(function (posts) {
             res.renderHybrid('management/posts', {posts:posts});
         }).catch(function (err) {

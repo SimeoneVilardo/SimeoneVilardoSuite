@@ -4,7 +4,6 @@
       .form-horizontal
         h4 Errore
         hr
-        .form-group
-          p #{errMessage}
+        label #{errMessage}
 script.
   updateBrowserData('Errore', '#{url}', #{ajax}, #{back}, #{noUpdate});

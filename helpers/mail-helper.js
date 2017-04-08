@@ -3,10 +3,10 @@ var Promise = require('bluebird');
 var path = require('path');
 var fs = Promise.promisifyAll(require("fs"));
 var nodemailer = Promise.promisifyAll(require("nodemailer"));
-var EmailTemplate = require('email-templates').EmailTemplate
+var EmailTemplate = require('email-templates').EmailTemplate;
 var config = require('../config');
 
-var templates = new EmailTemplate(path.join(__dirname, '..', config.mails.signup.path));
+var signup = new EmailTemplate(path.join(__dirname, '..', config.mails.signup.path));
 
 var transporter = null;
 var senderMail = null;
@@ -33,7 +33,7 @@ mailHelper.init = function () {
 
 mailHelper.sendSignUp = function (username, password, recipient, token) {
     var data = {username: username, password: password, url: config.host.http_baseurl + '/validate?token=' + token};
-    return templates.render(data).then(function (result) {
+    return signup.render(data).then(function (result) {
         return mailHelper.sendTemplateMail(result.html, config.mails.signup.subject, recipient);
     }).catch(function (err) {
          return err;

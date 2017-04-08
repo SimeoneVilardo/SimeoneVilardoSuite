@@ -57,5 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
-#Config file
+#Config files
 config.js
+
+#WebStorm files
+.idea

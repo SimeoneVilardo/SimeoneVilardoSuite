@@ -13,6 +13,14 @@ module.exports = function (router, passport) {
         });
     });
 
+    router.get('/info', function (req, res, next) {
+        res.renderHybrid('index/info');
+    });
+
+    router.get('/contacts', function (req, res, next) {
+        res.renderHybrid('index/contacts');
+    });
+
     router.get('/login', function (req, res, next) {
         res.renderHybrid('index/login', { passportMessage: req.flash('passportMessage') });
     });

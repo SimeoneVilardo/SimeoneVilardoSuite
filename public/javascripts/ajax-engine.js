@@ -11,7 +11,8 @@ $(document).on('click', 'a[data-ajax*="true"]', function(e) {
             method: method,
             url: url
         })
-        .done(function(html) {
+        .always(function(res) {
+            var html = (typeof res === 'string' || res instanceof String) ? res : (res.responseText);
             switch (mode) {
                 case 'replace':
                     $(targetId).html(html);
@@ -42,7 +43,8 @@ $(document).on('submit', 'form[data-ajax*="true"]', function(e) {
         url: url,
         data: data
     })
-        .done(function(html) {
+        .always(function(res) {
+            var html = (typeof res === 'string' || res instanceof String) ? res : (res.responseText);
             switch (mode) {
                 case 'replace':
                     $(targetId).html(html);

@@ -1,0 +1,19 @@
+.container
+    h4 Contatti
+    address
+        strong Mail lavorativa:&nbsp;
+        |
+        a(href='mailto:simeonevilardo@simeonevilardo.com') simeonevilardo@simeonevilardo.com
+        br
+        |
+        strong Mail personale:&nbsp;
+        |
+        a(href='mailto:simeone.vilardo@gmail.com') simeone.vilardo@gmail.com
+        br
+        |
+        p
+            | Telefono:&nbsp;
+            a(href='tel:+393495877798') 349.5877798
+        br
+    script.
+        updateBrowserData('Contatti', '#{url}', #{ajax}, #{back}, #{noUpdate});

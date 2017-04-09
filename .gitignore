@@ -65,3 +65,6 @@ config.js
 
 #Uploads
 public/images/uploads
+
+#Dynamic scripts
+public/javascripts/scripts.js

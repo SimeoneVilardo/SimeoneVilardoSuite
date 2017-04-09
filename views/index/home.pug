@@ -8,9 +8,9 @@
               h2.post-title  #{post.title}
               h3.post-subtitle  #{post.subtitle}
             p.post-meta
-              | Posted by&nbsp;
-              p #{post.author.username}
-              |  il #{post.creationDate.toLocaleString('it-IT', { hour12: false })}
+              | Scritto da&nbsp;
+              label #{post.author.username}
+              |  in data #{post.creationDate.toLocaleString('it-IT', { hour12: false })}
           hr
 script.
   updateBrowserData('Home', '#{url}', #{ajax}, #{back}, #{noUpdate});

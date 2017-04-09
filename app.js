@@ -1,5 +1,6 @@
 var express = require('express');
-var helmet = require('helmet')
+var helmet = require('helmet');
+var fs = require('fs');
 var path = require('path');
 var logger = require('morgan');
 var pug = require('pug');
@@ -8,6 +9,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var bluebird = require('bluebird');
 mongoose.Promise = bluebird;
+var uglify = require("uglify-js");
 var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
@@ -27,11 +29,30 @@ require('./auth/passport')(passport);
 var app = express();
 app.use(helmet());
 
+console.log('Ottimizzazione script...');
+var script = uglify.minify([
+    path.join(__dirname, 'public', 'javascripts', 'jquery', 'jquery-3.2.0.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'bootstrap', 'bootstrap.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'nanobar', 'nanobar.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'bootstrap-toggle', 'bootstrap-toggle.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'bootstrap-select', 'bootstrap-select.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'ajax-engine.js'),
+    path.join(__dirname, 'public', 'javascripts', 'simeonevilardoweb.js')
+]);
+console.log('Script ottimizzati!');
+
+fs.writeFile(path.join(__dirname, 'public', 'javascripts', 'scripts.js'), script.code, function(err) {
+    if(err)
+        console.log(err);
+    else
+        console.log('Script creato');
+});
+
 app.use(function (req, res, next) {
     res.renderHybrid = function (view, locals, callback) {
         req.back = !!req.headers['back-req'];
         req.ajax = !!req.xhr;
-        locals = utilityHelper.extend(locals, { ajax: req.ajax, url: req.originalUrl, back: req.back, noUpdate: !!locals.noUpdate });
+        locals = locals ? utilityHelper.extend(locals, { ajax: req.ajax, url: req.originalUrl, back: req.back, noUpdate: !!locals.noUpdate }) : { ajax: req.ajax, url: req.originalUrl, back: req.back, noUpdate: false };
         if (req.ajax)
             res.render(view, locals, callback);
         else

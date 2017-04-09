@@ -62,3 +62,6 @@ config.js
 
 #WebStorm files
 .idea
+
+#Uploads
+public/images/uploads

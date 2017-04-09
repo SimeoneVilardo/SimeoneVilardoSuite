@@ -22,8 +22,9 @@
 script.
     updateBrowserData('Crea Post', '#{url}', #{ajax}, #{back}, #{noUpdate});
     $(document).ready(function () {
-        CKEDITOR.plugins.addExternal( 'imageuploader', '/javascripts/ckeditor/plugins/imageuploader/', 'plugin.js' );
-        CKEDITOR.replace('content', {extraPlugins: 'imageuploader'});
+        CKEDITOR.config.imageUploadUrl = '/blog/upload';
+        CKEDITOR.replace('content', {extraPlugins: 'uploadimage', filebrowserBrowseUrl: '',
+            filebrowserUploadUrl: '/blog/upload'});
         CKEDITOR.instances['content'].setData((!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content);
         $('#btnSubmit').click(function () {
             CKEDITOR.instances['content'].updateElement();

@@ -3,6 +3,11 @@ var router = express.Router();
 var config = require('../config.js');
 var dbHelper = require('../helpers/database-helper.js');
 var errorHelper = require('../helpers/error-helper.js');
+var fs  = require('fs');
+var path  = require('path');
+var multer  = require('multer');
+var upload = multer({ dest: '/tmp/'});
+
 
 router.get('/post', function (req, res, next) {
     dbHelper.findPost({_id: req.query.id}).then(function (post) {
@@ -13,6 +18,24 @@ router.get('/post', function (req, res, next) {
         next(err);
     });
 });
+
+router.post('/upload', upload.single('upload'), function(req, res) {
+    var ext = req.file.originalname.substr(req.file.originalname.lastIndexOf('.')+1);
+    var file = path.join(__dirname, '..', 'public', 'images', 'uploads', req.file.filename + '.' + ext);
+    fs.rename(req.file.path, file, function(err) {
+        if (err) {
+            console.log(err);
+            next(err);
+        } else {
+            res.json({
+                uploaded: 1,
+                fileName: req.file.filename,
+                url:  '/images/uploads/' + req.file.filename + '.' + ext
+            });
+        }
+    });
+});
+
 
 router.get('/newpost', function (req, res, next) {
     res.renderHybrid('management/post', {post: req.session.post});

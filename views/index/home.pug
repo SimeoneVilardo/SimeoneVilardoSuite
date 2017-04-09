@@ -4,18 +4,13 @@
       if(posts && posts.length > 0)
         each post in posts
           .post-preview
-            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/post?postId=' + post._id)
+            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/post?id=' + post._id)
               h2.post-title  #{post.title}
               h3.post-subtitle  #{post.subtitle}
             p.post-meta
               | Posted by&nbsp;
-              a(href='#') #{post.author.username}
+              p #{post.author.username}
               |  il #{post.creationDate.toLocaleString('it-IT', { hour12: false })}
           hr
-      ul.pager
-        li.next
-          a(href='#') Older Posts &rarr;
-          |  
-          a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/login') Login
 script.
   updateBrowserData('Home', '#{url}', #{ajax}, #{back}, #{noUpdate});

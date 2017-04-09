@@ -1,4 +1,5 @@
 var dbHelper = {};
+var config = require('../config.js');
 var User = require('../models/user');
 var Post = require('../models/post');
 
@@ -23,23 +24,26 @@ dbHelper.deletePost = function (query) {
 };
 
 dbHelper.deleteUser = function (query) {
-    return User.find(query).remove().exec();
+    return User.remove(query).exec();
 };
 
 dbHelper.updateUser = function (query, data) {
     return User.update(query, data).exec();
 };
 
+dbHelper.updatePost = function (query, data) {
+    return Post.update(query, data).exec();
+};
 
-dbHelper.createPost = function (user, post) {
+dbHelper.createOrUpdatePost = function (user, post) {
     var newPost = new Post();
     newPost.author = {_id: user._id, username: user.username};
     newPost.title = post.title;
     newPost.subtitle = post.subtitle;
     newPost.content = post.content;
-    newPost.validated = !!user.admin;
-    if(newPost.validated)
-        newPost.validationDate = Date.now();
+    newPost.validation = {validated: user.role >= config.roles.admin.code};
+    if(newPost.validation.validated)
+        newPost.validation.validationDate = Date.now();
     if(post._id)
         newPost._id = post._id;
     return Post.update({_id: newPost._id}, newPost, {upsert: true, setDefaultsOnInsert: true}).exec();

@@ -45,10 +45,6 @@ jQuery(document).ready(function ($) {
             }
         }
     });
-
-    if($('.selectpicker').length > 0)
-        $('.selectpicker').selectpicker();
-
 });
 
 window.onpopstate = function (e) {
@@ -65,6 +61,14 @@ window.onpopstate = function (e) {
 };
 
 function updateBrowserData(title, url, ajax, back, noUpdate) {
+    var selectPicker = $('.selectpicker');
+    if(selectPicker.length > 0)
+        selectPicker.selectpicker();
+
+    var checkbox = $("input[type='checkbox']");
+    if(checkbox.length > 0)
+        checkbox.bootstrapToggle();
+
     if(!noUpdate){
         if (!back && ajax)
             window.history.pushState(url, url, url);

@@ -18,7 +18,7 @@
                             td #{user.username}
                             td #{user.email}
                             td
-                                if user.validated
+                                if user.validation.validated
                                     span.label.label-success Convalidato
                                 else
                                     user.label.label-warning Non convalidato
@@ -30,7 +30,7 @@
                                 a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/edituser?id=' + user._id)
                                     i.fa.fa-pencil.fa-lg
                             td
-                                a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/blockuser?id=' + user._id)
+                                a.btn.btn-warning(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/banuser?id=' + user._id)
                                     i.fa.fa-ban.fa-lg
                             td
                                 a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/deleteuser?id=' + user._id)

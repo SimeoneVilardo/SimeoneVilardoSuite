@@ -1,42 +1,54 @@
 .container
     .row
         .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
-            form(action='/managemet/edituser', method='post')
+            form(data-ajax='true', method='post', data-ajax-mode='replace', data-ajax-target='#body-content', action='/management/edituser?id=' + user._id)
                 .form-horizontal
                     h4 Modifica utente
                     hr
                     .form-group
-                        label.control-label.col-md-2(for='Username') Username
-                        .col-md-10
-                            input#username.form-control.text-box.single-line(name='username', type='text', value='#{user.username}')
+                        label.control-label.col-md-4(for='Username') Username
+                        .col-md-8
+                            input#username.form-control.text-box.single-line(name='username', type='text', value=user.username)
                     .form-group
-                        label.control-label.col-md-2(for='email') Email
-                        .col-md-10
-                            input#email.form-control.text-box.single-line.email(name='email', type='email', value='#{user.username}')
+                        label.control-label.col-md-4(for='email') Email
+                        .col-md-8
+                            input#email.form-control.text-box.single-line.email(name='email', type='email', value=user.email)
                     .form-group
-                        label.control-label.col-md-2(for='password') Password
-                        .col-md-10
+                        label.control-label.col-md-4(for='password') Password
+                        .col-md-8
                             input#password.form-control.text-box.single-line.password(name='password', type='password')
                     .form-group
-                        label.control-label.col-md-2(for='validated') Convalidato
-                        .col-md-10
-                            input#validated(type='checkbox', name='validated' checked= user.validated ? 'true' : 'false', data-toggle='toggle', data-onstyle='success', data-on="Si", data-offstyle='danger', data-off="No")
+                        label.control-label.col-md-4(for='password') Conferma Password
+                        .col-md-8
+                            input#confirmPassword.form-control.text-box.single-line.password(name='confirmPassword', type='password')
                     .form-group
-                        label.control-label.col-md-2(for='role') Ruolo
-                        .col-md-10
+                        label.control-label.col-md-4(for='validated') Convalidato
+                        .col-md-8
+                            input#validated(type='checkbox', name='validated', data-toggle='toggle', data-onstyle='success', data-on="Si", data-offstyle='danger', data-off="No", checked=user.validation.validated)
+                    .form-group
+                        label.control-label.col-md-4(for='role') Ruolo
+                        .col-md-8
                             select#role.selectpicker(name='role')
                                 each role in roles
                                     if role.code == user.role
-                                        option(value='#{role.code}', selected) #{role.name}
+                                        option(value=role.code, selected) #{role.name}
                                     else
-                                        option(value='#{role.code}') #{role.name}
+                                        option(value=role.code) #{role.name}
                     .form-group
-                        label.control-label.col-md-2(for='creationDate') Data creazione
-                        .col-md-10
+                        label.control-label.col-md-4(for='creationDate') Data Registrazione
+                        .col-md-8
                             label#creationDate #{user.creationDate.toLocaleString('it-IT', { hour12: false })}
+                    if user.updateDate
+                        .form-group
+                            label.control-label.col-md-4(for='updateDate') Data Modifica
+                            .col-md-8
+                                label#updateDate #{user.updateDate.toLocaleString('it-IT', {hour12: false})}
                     .form-group
-                        .col-md-offset-2.col-md-10
-                            input.btn.btn-default(type='submit', value='Accedi')
+                        .col-md-offset-4.col-md-8
+                            .btn-group
+                                button.btn.btn-primary(type='submit')
+                                    i.fa.fa-floppy-o.fa-lg
+                                    |  Salva
                     if passportMessage
                         .alert.alert.danger #{passportMessage}
 script.

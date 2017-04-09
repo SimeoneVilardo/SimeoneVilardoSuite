@@ -23,20 +23,21 @@ module.exports = function (passport) {
             passReqToCallback: true
         },
         function (req, username, password, done) {
-            dbHelper.findUser({username: username, email: req.body.email}, 'username').then(function (user) {
+            dbHelper.findUser({$or: [{username: username}, {email: req.body.email}]}, 'username').then(function (user) {
                 if (user)
-                    return done(null, false, req.flash('passportMessage', 'Utente già registrato.'));
-                else {
-                    var newUser = new User();
-                    newUser.username = username;
-                    newUser.email = req.body.email;
-                    newUser.password = securityHelper.hashPassword(password);
-                    return [newUser.save(), password];
-                }
+                    return done(null, false, req.flash('passportMessage', 'Utente già registrato'));
+                if (password && (password !== req.body.confirmPassword))
+                    return done(null, false, req.flash('passportMessage', 'Le password non combaciano'));
+                var newUser = new User();
+                newUser.username = username;
+                newUser.email = req.body.email;
+                newUser.password = securityHelper.hashPassword(password);
+                return [newUser.save(), password];
             }).spread(function (newUser, password) {
-                return [newUser, mailHelper.sendSignUp(newUser.username, password, newUser.email, newUser.validationToken.token)];
+                if(newUser)
+                    return [newUser, mailHelper.sendSignUp(newUser.username, password, newUser.email, newUser.validationToken.token)];
             }).spread(function (newUser, mailResult) {
-                if(!mailResult.response.startsWith('250'))
+                if (mailResult&& !mailResult.response.startsWith('250'))
                     return done(null, false, req.flash('passportMessage', 'Errore nell\'invio della mail'));
                 return done(null, newUser);
             }).catch(function (err) {

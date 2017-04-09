@@ -32,9 +32,11 @@ html
             else
               li
                 a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/profile') #{currentUser.username}
-                if currentUser.admin
+                if currentUser.role >= roles.admin.code
                   li
-                    a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/listposts') Gestionale
+                    a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/posts') Gestisci Blog
+                  li
+                    a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/users') Gestisci Utenti
               li
                 a(href='/logout') Esci
             li
@@ -42,9 +44,7 @@ html
             li
               a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/contact') Contattami
             li
-              a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/createpost') Crea Post
-            li
-              a(href='https://github.com/SimeoneVilardo/SimeoneVilardoWeb') Source
+              a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/newpost') Scrivi Articolo
     header.intro-header(style="background-image: url('/images/home-bg.jpg')")
       .container
         .row
@@ -63,17 +63,7 @@ html
           .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
             ul.list-inline.text-center
               li
-                a(href='#')
-                  span.fa-stack.fa-lg
-                    i.fa.fa-circle.fa-stack-2x
-                    i.fa.fa-twitter.fa-stack-1x.fa-inverse
-              li
-                a(href='#')
-                  span.fa-stack.fa-lg
-                    i.fa.fa-circle.fa-stack-2x
-                    i.fa.fa-facebook.fa-stack-1x.fa-inverse
-              li
-                a(href='#')
+                a(href='https://github.com/SimeoneVilardo/SimeoneVilardoWeb')
                   span.fa-stack.fa-lg
                     i.fa.fa-circle.fa-stack-2x
                     i.fa.fa-github.fa-stack-1x.fa-inverse

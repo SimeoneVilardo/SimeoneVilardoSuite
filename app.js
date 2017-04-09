@@ -31,11 +31,11 @@ app.use(function (req, res, next) {
     res.renderHybrid = function (view, locals, callback) {
         req.back = !!req.headers['back-req'];
         req.ajax = !!req.xhr;
-        locals = utilityHelper.extend(locals, { ajax: req.ajax, url: req.url, back: req.back, noUpdate: !!locals.noUpdate });
+        locals = utilityHelper.extend(locals, { ajax: req.ajax, url: req.originalUrl, back: req.back, noUpdate: !!locals.noUpdate });
         if (req.ajax)
             res.render(view, locals, callback);
         else
-            res.render(config.views.layout, { partialView: pug.renderFile(path.join(__dirname, config.views.dir, view) + config.views.ext, locals), currentUser:req.user }, callback);
+            res.render(config.views.layout, { partialView: pug.renderFile(path.join(__dirname, config.views.dir, view) + config.views.ext, locals), currentUser:req.user, roles: config.roles }, callback);
     };
     next();
 });
@@ -62,9 +62,21 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-require('./routes/index.js')(app, passport);
-require('./routes/blog.js')(app, passport);
-require('./routes/management.js')(app, passport);
+app.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+}));
+
+app.post('/signup', passport.authenticate('local-signup', {
+    successRedirect: '/', // redirect to the secure profile section
+    failureRedirect: '/signup', // redirect back to the signup page if there is an error
+    failureFlash: true // allow flash messages
+}));
+
+app.use('/', require('./routes/index.js'));
+app.use('/blog', require('./routes/blog.js'));
+app.use('/management', require('./routes/management.js'));
 
 //app.use('/', index);
 

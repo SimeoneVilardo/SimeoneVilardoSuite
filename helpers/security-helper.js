@@ -24,7 +24,7 @@ securityHelper.isAuthor = function(req, res, next) {
 
 
 securityHelper.isInRole = function(req, res, next) {
-    if(req.user.role === res.locals.role)
+    if(req.user.role >= res.locals.role)
         next();
     else
         next(errorHelper.unauthorized());
@@ -41,7 +41,7 @@ securityHelper.setSuperAdmin = function(req, res, next) {
 };
 
 securityHelper.hashPassword = function (password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
 };
 
 securityHelper.checkPassword = function (password, hashedPassword) {

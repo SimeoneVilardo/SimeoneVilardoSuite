@@ -7,9 +7,12 @@ var postSchema = new Schema({
     title: { type: String, required: true},
     subtitle: { type: String, required: true},
     content: { type: String, required: true},
-    validated: {type: Boolean, default: false, required: true},
-    validationDate: { type: Date },
-    creationDate: { type: Date, default: Date.now }
+    validation: {
+        validated: {type: Boolean, default: false, required: true},
+        validationDate: { type: Date }
+    },
+    creationDate: { type: Date, default: Date.now },
+    updateDate: {type: Date}
 });
 
 var post = mongoose.model('post', postSchema);

@@ -31,7 +31,7 @@ html
                 a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/signup') Registrati
             else
               li
-                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/profile') #{currentUser.username}
+                a(style='cursor:pointer') #{currentUser.username}
                 if currentUser.role >= roles.admin.code
                   li
                     a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/posts') Gestisci Blog

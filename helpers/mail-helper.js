@@ -1,8 +1,6 @@
 var mailHelper = {};
-var Promise = require('bluebird');
 var path = require('path');
-var fs = Promise.promisifyAll(require("fs"));
-var nodemailer = Promise.promisifyAll(require("nodemailer"));
+var nodemailer = require("nodemailer");
 var EmailTemplate = require('email-templates').EmailTemplate;
 var config = require('../config');
 

@@ -1,6 +1,8 @@
 var express = require('express');
 var helmet = require('helmet');
-var fs = require('fs');
+var Promise = require('bluebird');
+var fs = Promise.promisifyAll(require('fs'));
+var uglify = Promise.promisifyAll(require('uglify-js'));
 var path = require('path');
 var logger = require('morgan');
 var pug = require('pug');
@@ -9,7 +11,6 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var bluebird = require('bluebird');
 mongoose.Promise = bluebird;
-var uglify = require("uglify-js");
 var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
@@ -30,33 +31,48 @@ var app = express();
 app.use(helmet());
 
 console.log('Ottimizzazione script...');
-var script = uglify.minify([
-    path.join(__dirname, 'public', 'javascripts', 'jquery', 'jquery-3.2.0.min.js'),
-    path.join(__dirname, 'public', 'javascripts', 'bootstrap', 'bootstrap.min.js'),
-    path.join(__dirname, 'public', 'javascripts', 'nanobar', 'nanobar.min.js'),
-    path.join(__dirname, 'public', 'javascripts', 'bootstrap-toggle', 'bootstrap-toggle.min.js'),
-    path.join(__dirname, 'public', 'javascripts', 'bootstrap-select', 'bootstrap-select.min.js'),
-    path.join(__dirname, 'public', 'javascripts', 'ajax-engine.js'),
-    path.join(__dirname, 'public', 'javascripts', 'simeonevilardoweb.js')
-]);
-console.log('Script ottimizzati!');
-
-fs.writeFile(path.join(__dirname, 'public', 'javascripts', 'scripts.js'), script.code, function(err) {
-    if(err)
-        console.log(err);
-    else
-        console.log('Script creato');
-});
+var scriptPath = path.join(__dirname, 'public', 'javascripts', 'scripts.js');
+var script = null;
+try {
+    script = uglify.minify([
+        path.join(__dirname, 'public', 'javascripts', 'jquery', 'jquery-3.2.0.min.js'),
+        path.join(__dirname, 'public', 'javascripts', 'bootstrap', 'bootstrap.min.js'),
+        path.join(__dirname, 'public', 'javascripts', 'nanobar', 'nanobar.min.js'),
+        path.join(__dirname, 'public', 'javascripts', 'bootstrap-toggle', 'bootstrap-toggle.min.js'),
+        path.join(__dirname, 'public', 'javascripts', 'bootstrap-select', 'bootstrap-select.min.js'),
+        path.join(__dirname, 'public', 'javascripts', 'ajax-engine.js'),
+        path.join(__dirname, 'public', 'javascripts', 'simeonevilardoweb.js')]
+    );
+    console.log('Script ottimizzati');
+}
+catch (err) {
+    console.log('Errore nell\'ottimizzazione degli script', err);
+}
+if (script)
+    fs.writeFileAsync(scriptPath, script.code).then(function () {
+        console.log('Script salvati in ' + scriptPath);
+    }).catch(function (err) {
+        console.log('Errore nel salvataggio degli script ottimizzati', err);
+    });
 
 app.use(function (req, res, next) {
     res.renderHybrid = function (view, locals, callback) {
         req.back = !!req.headers['back-req'];
         req.ajax = !!req.xhr;
-        locals = locals ? utilityHelper.extend(locals, { ajax: req.ajax, url: req.originalUrl, back: req.back, noUpdate: !!locals.noUpdate }) : { ajax: req.ajax, url: req.originalUrl, back: req.back, noUpdate: false };
+        locals = locals ? utilityHelper.extend(locals, {
+            ajax: req.ajax,
+            url: req.originalUrl,
+            back: req.back,
+            noUpdate: !!locals.noUpdate
+        }) : {ajax: req.ajax, url: req.originalUrl, back: req.back, noUpdate: false};
         if (req.ajax)
             res.render(view, locals, callback);
         else
-            res.render(config.views.layout, { partialView: pug.renderFile(path.join(__dirname, config.views.dir, view) + config.views.ext, locals), currentUser:req.user, roles: config.roles }, callback);
+            res.render(config.views.layout, {
+                partialView: pug.renderFile(path.join(__dirname, config.views.dir, view) + config.views.ext, locals),
+                currentUser: req.user,
+                roles: config.roles
+            }, callback);
     };
     next();
 });
@@ -70,14 +86,14 @@ app.set('view engine', 'pug');
 app.use(logger('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.json()); // get information from html forms
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: config.session.secret,
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    store: new MongoStore({mongooseConnection: mongoose.connection}),
     resave: true,
     saveUninitialized: true,
-    cookie: { expires: utilityHelper.createExpDate(1, config.sizedate.week) }
+    cookie: {expires: utilityHelper.createExpDate(1, config.sizedate.week)}
 }));
 app.use(passport.initialize());
 app.use(passport.session());

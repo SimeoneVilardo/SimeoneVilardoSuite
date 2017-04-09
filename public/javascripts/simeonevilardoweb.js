@@ -1,3 +1,5 @@
+var content = null;
+
 jQuery(document).ready(function ($) {
     var MQL = 1170;
     if ($(window).width() > MQL) {
@@ -37,7 +39,6 @@ jQuery(document).ready(function ($) {
                 console.log('onprogress', e);
                 var percentage = Math.floor(e.loaded / e.total * 100);
                 nanobar.go(percentage);
-                console.log('percentage', percentage);
             },
 
             onload: function (e) {
@@ -61,6 +62,17 @@ window.onpopstate = function (e) {
 };
 
 function updateBrowserData(title, url, ajax, back, noUpdate) {
+    var ckeditor = $('.ckeditor');
+    if(ckeditor && ckeditor.length > 0){
+        CKEDITOR.config.imageUploadUrl = '/blog/upload';
+        CKEDITOR.replace('content', {extraPlugins: 'uploadimage', filebrowserBrowseUrl: '',
+            filebrowserUploadUrl: '/blog/upload'});
+        CKEDITOR.instances['content'].setData(content);
+        /*        $('#btnSubmit').click(function () {
+         CKEDITOR.instances['content'].updateElement();
+         });*/
+    }
+
     var selectPicker = $('.selectpicker');
     if(selectPicker.length > 0)
         selectPicker.selectpicker();

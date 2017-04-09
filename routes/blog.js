@@ -3,15 +3,15 @@ var router = express.Router();
 var config = require('../config.js');
 var dbHelper = require('../helpers/database-helper.js');
 var errorHelper = require('../helpers/error-helper.js');
-var fs  = require('fs');
-var path  = require('path');
-var multer  = require('multer');
-var upload = multer({ dest: '/tmp/'});
+var fs = require('fs');
+var path = require('path');
+var multer = require('multer');
+var upload = multer({dest: '/tmp/'});
 
 
 router.get('/post', function (req, res, next) {
     dbHelper.findPost({_id: req.query.id}).then(function (post) {
-        if(!post.validation.validated && (!req.isAuthenticated() || (req.user && req.user.role === config.roles.user && post.author._id !== post._id)))
+        if (!post.validation.validated && (!req.isAuthenticated() || (req.user && req.user.role === config.roles.user && post.author._id !== post._id)))
             throw errorHelper.pageNotFound();
         res.renderHybrid('blog/post', {post: post});
     }).catch(function (err) {
@@ -19,10 +19,10 @@ router.get('/post', function (req, res, next) {
     });
 });
 
-router.post('/upload', upload.single('upload'), function(req, res) {
-    var ext = req.file.originalname.substr(req.file.originalname.lastIndexOf('.')+1);
+router.post('/upload', upload.single('upload'), function (req, res) {
+    var ext = req.file.originalname.substr(req.file.originalname.lastIndexOf('.') + 1);
     var file = path.join(__dirname, '..', 'public', 'images', 'uploads', req.file.filename + '.' + ext);
-    fs.rename(req.file.path, file, function(err) {
+    fs.rename(req.file.path, file, function (err) {
         if (err) {
             console.log(err);
             next(err);
@@ -30,7 +30,7 @@ router.post('/upload', upload.single('upload'), function(req, res) {
             res.json({
                 uploaded: 1,
                 fileName: req.file.filename,
-                url:  '/images/uploads/' + req.file.filename + '.' + ext
+                url: '/images/uploads/' + req.file.filename + '.' + ext
             });
         }
     });
@@ -44,8 +44,10 @@ router.get('/newpost', function (req, res, next) {
 router.post('/newpost', function (req, res, next) {
     if (req.isAuthenticated()) {
         dbHelper.createOrUpdatePost(req.user, req.body).then(function (result) {
-            if(result.ok === 1)
+            if (result.ok === 1) {
+                delete req.session.post;
                 return dbHelper.findPost({_id: result.upserted[0]._id});
+            }
             else
                 throw errorHelper.serverError('Errore nel salvataggio dell\'artcolo', 500);
         }).then(function (post) {

@@ -15,18 +15,10 @@
                     input#subtitle.form-control.text-box.single-line(name='subtitle', type='text', value= post ? post.subtitle : '')
             .form-group
                 .col-md-12
-                    textarea(name='content')
+                    textarea.ckeditor(name='content')
             .form-group
                 .col-md-offset-5.col-md-2
                     input.btn.btn-default.btn-block(type='submit')
 script.
+    content = (!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content;
     updateBrowserData('Crea Post', '#{url}', #{ajax}, #{back}, #{noUpdate});
-    $(document).ready(function () {
-        CKEDITOR.config.imageUploadUrl = '/blog/upload';
-        CKEDITOR.replace('content', {extraPlugins: 'uploadimage', filebrowserBrowseUrl: '',
-            filebrowserUploadUrl: '/blog/upload'});
-        CKEDITOR.instances['content'].setData((!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content);
-        $('#btnSubmit').click(function () {
-            CKEDITOR.instances['content'].updateElement();
-        });
-    });

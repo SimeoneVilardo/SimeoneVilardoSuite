@@ -49,7 +49,7 @@ securityHelper.checkPassword = function (password, hashedPassword) {
 };
 // {$unset: {validationToken: 1 }, $set: {'validation.validated': true }}
 securityHelper.validateUser = function (token) {
-   return dbHelper.updateUser({'validationToken.token':token,"validationToken.expirationDate": { $gt: Date.now() } }, {$unset: {validationToken: 1 }, $set: {'validation.validated': true }});
+   return dbHelper.updateUser({'validationToken.token':token,"validationToken.expirationDate": { $gt: Date.now() } }, {$unset: {validationToken: 1 }, $set: {'validation.validated': true, 'validation.validationDate': Date.now() }});
 };
 
 module.exports = securityHelper;

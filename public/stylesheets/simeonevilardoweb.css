@@ -8,7 +8,7 @@
     font-family: "FontAwesome";
     font-weight: normal;
     font-style: normal;
-    src: url("//cdn.jsdelivr.net/fontawesome/4.7.0/fonts/fontawesome-webfont.woff2") format("woff2"), url("//cdn.jsdelivr.net/fontawesome/4.7.0/fonts/fontawesome-webfont.woff") format("woff"), url("//cdn.jsdelivr.net/fontawesome/4.7.0/fonts/fontawesome-webfont.ttf") format("truetype");
+    src: url("../fonts/fontawesome-webfont.woff2") format("woff2"), url("../fonts/fontawesome-webfont.woff") format("woff"), url("../fonts/fontawesome-webfont.ttf") format("truetype");
 }
 
 body {

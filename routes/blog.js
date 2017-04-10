@@ -6,7 +6,7 @@ var errorHelper = require('../helpers/error-helper.js');
 var fs = require('fs');
 var path = require('path');
 var multer = require('multer');
-var upload = multer({dest: '/tmp/'});
+var upload = multer({dest: path.join(__dirname, '..', 'public', 'images', 'uploads')});
 
 
 router.get('/post', function (req, res, next) {
@@ -19,12 +19,10 @@ router.get('/post', function (req, res, next) {
     });
 });
 
-router.post('/upload', upload.single('upload'), function (req, res) {
+router.post('/upload', upload.single('upload'), function (req, res, next) {
     var ext = req.file.originalname.substr(req.file.originalname.lastIndexOf('.') + 1);
-    var file = path.join(__dirname, '..', 'public', 'images', 'uploads', req.file.filename + '.' + ext);
-    fs.rename(req.file.path, file, function (err) {
+    fs.rename(req.file.path, req.file.path + '.' + ext, function (err) {
         if (err) {
-            console.log(err);
             next(err);
         } else {
             res.json({
@@ -35,7 +33,6 @@ router.post('/upload', upload.single('upload'), function (req, res) {
         }
     });
 });
-
 
 router.get('/newpost', function (req, res, next) {
     res.renderHybrid('management/post', {post: req.session.post});

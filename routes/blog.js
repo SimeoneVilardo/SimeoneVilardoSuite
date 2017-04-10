@@ -40,6 +40,10 @@ router.get('/newpost', function (req, res, next) {
 
 router.post('/newpost', function (req, res, next) {
     if (req.isAuthenticated()) {
+        if(!req.user.validated){
+            req.session.post = req.body;
+            throw errorHelper.unauthorized('Utente non convalidato');
+        }
         dbHelper.createOrUpdatePost(req.user, req.body).then(function (result) {
             if (result.ok === 1) {
                 delete req.session.post;

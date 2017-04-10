@@ -29,7 +29,6 @@ securityHelper.isAuthor = function(req, res, next) {
     });
 };
 
-
 securityHelper.isInRole = function(req, res, next) {
     if(req.user.role >= res.locals.role)
         next();

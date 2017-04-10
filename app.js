@@ -1,11 +1,8 @@
 var express = require('express');
 var helmet = require('helmet');
-var Promise = require('bluebird');
-var fs = Promise.promisifyAll(require('fs'));
-
 var path = require('path');
-var logger = require('morgan');
 var pug = require('pug');
+var logHelper = require('./helpers/log-helper.js');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
@@ -17,15 +14,18 @@ mongoose.Promise = bluebird;
 var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
+var winston = require('winston');
+const expressWinston = require('express-winston');
+var logger = new (winston.Logger)(logHelper.loggerConfig());
 const MongoStore = require('connect-mongo')(session);
 var utilityHelper = require('./helpers/utility-helper.js');
 var mailHelper = require('./helpers/mail-helper.js');
 var config = require('./config.js');
 
 mongoose.connect(config.mongodb.connection_string).then(function () {
-    console.log('Connessione a MongoDB riuscita');
+    logger.info('Connessione a MongoDB riuscita');
 }).catch(function (err) {
-    console.log('Errore connessione a MongoDB', err);
+    logger.error('Errore connessione a MongoDB', err);
 });
 mailHelper.init();
 require('./auth/passport')(passport);
@@ -43,11 +43,11 @@ utilityHelper.optimizeScripts([
     path.join(__dirname, 'public', 'javascripts', 'simeonevilardoweb.js')], path.join(__dirname, 'public', 'javascripts', 'scripts.js'));
 
 utilityHelper.optimizeStyles([
-    path.join(__dirname, '..', 'public', 'stylesheets', 'bootstrap', 'bootstrap.min.css'),
-    path.join(__dirname, '..', 'public', 'stylesheets', 'bootstrap-select', 'bootstrap-select.min.css'),
-    path.join(__dirname, '..', 'public', 'stylesheets', 'bootstrap-toggle', 'bootstrap-toggle.min.css'),
-    path.join(__dirname, '..', 'public', 'stylesheets', 'font-awesome', 'font-awesome.min.css'),
-    path.join(__dirname, '..', 'public', 'stylesheets', 'simeonevilardoweb.js')], path.join(__dirname, 'public', 'stylesheets', 'styles.css'));
+    path.join(__dirname, 'public', 'stylesheets', 'bootstrap', 'bootstrap.min.css'),
+    path.join(__dirname, 'public', 'stylesheets', 'bootstrap-select', 'bootstrap-select.min.css'),
+    path.join(__dirname, 'public', 'stylesheets', 'bootstrap-toggle', 'bootstrap-toggle.min.css'),
+    path.join(__dirname, 'public', 'stylesheets', 'font-awesome', 'font-awesome.min.css'),
+    path.join(__dirname, 'public', 'stylesheets', 'simeonevilardoweb.css')], path.join(__dirname, 'public', 'stylesheets', 'styles.css'));
 
 app.use(function (req, res, next) {
     res.renderHybrid = function (view, locals, callback) {
@@ -74,10 +74,9 @@ app.use(function (req, res, next) {
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev')); // log every request to the console
+//app.use(expressWinston.logger(logHelper.loggerConfig()));
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.json()); // get information from html forms
 app.use(bodyParser.urlencoded({extended: true}));
@@ -119,12 +118,13 @@ app.use(function (req, res, next) {
 });
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
+        err.status = err.status || 500;
+        logger.error(err);
+        res.status(err.status);
         res.renderHybrid('error', {
             errMessage: err.message,
             error: err
@@ -135,7 +135,9 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
-    res.status(err.status || 500);
+    err.status = err.status || 500;
+    logger.error(err);
+    res.status(err.status);
     res.renderHybrid('error', {
         errMessage: err.message,
         error: {}

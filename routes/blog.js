@@ -8,7 +8,6 @@ var path = require('path');
 var multer = require('multer');
 var upload = multer({dest: path.join(__dirname, '..', 'public', 'images', 'uploads')});
 
-
 router.get('/post', function (req, res, next) {
     dbHelper.findPost({_id: req.query.id}).then(function (post) {
         if (!post.validation.validated && (!req.isAuthenticated() || (req.user && req.user.role === config.roles.user && post.author._id !== post._id)))

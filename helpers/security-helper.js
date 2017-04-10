@@ -47,9 +47,9 @@ securityHelper.hashPassword = function (password) {
 securityHelper.checkPassword = function (password, hashedPassword) {
     return bcrypt.compareSync(password, hashedPassword);
 };
-
+// {$unset: {validationToken: 1 }, $set: {'validation.validated': true }}
 securityHelper.validateUser = function (token) {
-   return dbHelper.updateUser({'validationToken.token':token,"validationToken.expirationDate": { $gt: Date.now() } }, {$unset: {validationToken: 1 }, validated:true});
+   return dbHelper.updateUser({'validationToken.token':token,"validationToken.expirationDate": { $gt: Date.now() } }, {$unset: {validationToken: 1 }, $set: {'validation.validated': true }});
 };
 
 module.exports = securityHelper;

@@ -28,7 +28,8 @@
     "nodemailer": "^4.0.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "pug": "^2.0.0-beta11"
+    "pug": "^2.0.0-beta11",
+    "uglifycss": "0.0.25"
   },
   "devDependencies": {
     "uglify-js": "github:mishoo/UglifyJS2#harmony"

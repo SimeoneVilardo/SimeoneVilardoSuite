@@ -1,4 +1,9 @@
 ﻿var utilityHelper = {};
+var Promise = require('bluebird');
+var fs = Promise.promisifyAll(require('fs'));
+var path = require('path');
+var uglifyjs = require('uglify-js');
+var uglifycss = require('uglifycss');
 
 utilityHelper.extend = function () {
     var extended = {};
@@ -29,6 +34,42 @@ utilityHelper.extend = function () {
 
 utilityHelper.createExpDate = function (num, size) {
     return new Date(Date.now() + num * size);
+};
+
+utilityHelper.optimizeScripts = function (sourcePaths, destPath) {
+    console.log('Ottimizzazione script...');
+    return Promise.try(function () {
+        var script = uglifyjs.minify(sourcePaths);
+        if (script){
+            console.log('Script ottimizzati');
+            return fs.writeFileAsync(destPath, script.code);
+        }
+    }).then(function () {
+        console.log('Script salvati in ' + destPath);
+    }).catch(function (err) {
+        console.log('Errore nel salvataggio degli script ottimizzati', err);
+    });
+};
+
+utilityHelper.optimizeStyles = function (sourcePaths, destPath) {
+    console.log('Ottimizzazione stylesheet...');
+    return Promise.try(function () {
+        var style = uglifycss.processFiles([
+            path.join(__dirname, '..', 'public', 'stylesheets', 'bootstrap', 'bootstrap.min.css'),
+            path.join(__dirname, '..', 'public', 'stylesheets', 'bootstrap-select', 'bootstrap-select.min.css'),
+            path.join(__dirname, '..', 'public', 'stylesheets', 'bootstrap-toggle', 'bootstrap-toggle.min.css'),
+            path.join(__dirname, '..', 'public', 'stylesheets', 'font-awesome', 'font-awesome.min.css'),
+            path.join(__dirname, '..', 'public', 'stylesheets', 'simeonevilardoweb.css')]
+        );
+        if (style){
+            console.log('Stylesheet ottimizzati');
+            return fs.writeFileAsync(destPath, style);
+        }
+    }).then(function () {
+        console.log('Stylesheet salvati in ' + destPath);
+    }).catch(function (err) {
+        console.log('Errore nel salvataggio degli stylesheet ottimizzati', err);
+    });
 };
 
 module.exports = utilityHelper;

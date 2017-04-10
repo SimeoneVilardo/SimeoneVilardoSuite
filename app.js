@@ -2,7 +2,7 @@ var express = require('express');
 var helmet = require('helmet');
 var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
-var uglify = Promise.promisifyAll(require('uglify-js'));
+
 var path = require('path');
 var logger = require('morgan');
 var pug = require('pug');
@@ -30,30 +30,21 @@ require('./auth/passport')(passport);
 var app = express();
 app.use(helmet());
 
-console.log('Ottimizzazione script...');
-var scriptPath = path.join(__dirname, 'public', 'javascripts', 'scripts.js');
-var script = null;
-try {
-    script = uglify.minify([
-        path.join(__dirname, 'public', 'javascripts', 'jquery', 'jquery-3.2.0.min.js'),
-        path.join(__dirname, 'public', 'javascripts', 'bootstrap', 'bootstrap.min.js'),
-        path.join(__dirname, 'public', 'javascripts', 'nanobar', 'nanobar.min.js'),
-        path.join(__dirname, 'public', 'javascripts', 'bootstrap-toggle', 'bootstrap-toggle.min.js'),
-        path.join(__dirname, 'public', 'javascripts', 'bootstrap-select', 'bootstrap-select.min.js'),
-        path.join(__dirname, 'public', 'javascripts', 'ajax-engine.js'),
-        path.join(__dirname, 'public', 'javascripts', 'simeonevilardoweb.js')]
-    );
-    console.log('Script ottimizzati');
-}
-catch (err) {
-    console.log('Errore nell\'ottimizzazione degli script', err);
-}
-if (script)
-    fs.writeFileAsync(scriptPath, script.code).then(function () {
-        console.log('Script salvati in ' + scriptPath);
-    }).catch(function (err) {
-        console.log('Errore nel salvataggio degli script ottimizzati', err);
-    });
+utilityHelper.optimizeScripts([
+    path.join(__dirname, 'public', 'javascripts', 'jquery', 'jquery-3.2.0.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'bootstrap', 'bootstrap.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'nanobar', 'nanobar.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'bootstrap-toggle', 'bootstrap-toggle.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'bootstrap-select', 'bootstrap-select.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'ajax-engine.js'),
+    path.join(__dirname, 'public', 'javascripts', 'simeonevilardoweb.js')], path.join(__dirname, 'public', 'javascripts', 'scripts.js'));
+
+utilityHelper.optimizeStyles([
+    path.join(__dirname, '..', 'public', 'stylesheets', 'bootstrap', 'bootstrap.min.css'),
+    path.join(__dirname, '..', 'public', 'stylesheets', 'bootstrap-select', 'bootstrap-select.min.css'),
+    path.join(__dirname, '..', 'public', 'stylesheets', 'bootstrap-toggle', 'bootstrap-toggle.min.css'),
+    path.join(__dirname, '..', 'public', 'stylesheets', 'font-awesome', 'font-awesome.min.css'),
+    path.join(__dirname, '..', 'public', 'stylesheets', 'simeonevilardoweb.js')], path.join(__dirname, 'public', 'stylesheets', 'styles.css'));
 
 app.use(function (req, res, next) {
     res.renderHybrid = function (view, locals, callback) {

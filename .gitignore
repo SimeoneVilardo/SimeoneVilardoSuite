@@ -66,8 +66,9 @@ config.js
 #Uploads
 public/images/uploads
 
-#Dynamic scripts
+#Dynamic scripts and stylesheets
 public/javascripts/scripts.js
+public/stylesheets/styles.css
 
 #SSL
 ssl

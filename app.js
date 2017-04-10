@@ -10,6 +10,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var bluebird = require('bluebird');
+bluebird.config({
+    cancellation: true
+});
 mongoose.Promise = bluebird;
 var passport = require('passport');
 var flash = require('connect-flash');

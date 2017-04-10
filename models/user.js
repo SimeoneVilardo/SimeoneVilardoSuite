@@ -1,8 +1,7 @@
 ﻿var mongoose = require('mongoose');
 var config = require('../config.js');
-mongoose.Promise = require('bluebird');
 var utilityHelper = require('../helpers/utility-helper.js');
-var crypto = require('crypto')
+var crypto = require('crypto');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({

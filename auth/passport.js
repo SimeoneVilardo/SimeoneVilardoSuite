@@ -23,11 +23,17 @@ module.exports = function (passport) {
             passReqToCallback: true
         },
         function (req, username, password, done) {
-            dbHelper.findUser({$or: [{username: username}, {email: req.body.email}]}, 'username').then(function (user) {
-                if (user)
-                    return done(null, false, req.flash('passportMessage', 'Utente già registrato'));
-                if (password && (password !== req.body.confirmPassword))
-                    return done(null, false, req.flash('passportMessage', 'Le password non combaciano'));
+            var p = dbHelper.findUser({$or: [{username: username}, {email: req.body.email}]}, 'username').then(function (user) {
+                if (user){
+                    done(null, false, req.flash('passportMessage', 'Utente già registrato'));
+                    p.cancel();
+                    return;
+                }
+                if (password && (password !== req.body.confirmPassword)){
+                    done(null, false, req.flash('passportMessage', 'Le password non combaciano'));
+                    p.cancel();
+                    return;
+                }
                 var newUser = new User();
                 newUser.username = username;
                 newUser.email = req.body.email;
@@ -36,8 +42,12 @@ module.exports = function (passport) {
             }).spread(function (newUser, password) {
                 if(newUser)
                     return [newUser, mailHelper.sendSignUp(newUser.username, password, newUser.email, newUser.validationToken.token)];
+                done(null, false, req.flash('passportMessage', 'Errore durante la registrazione'));
+                p.cancel();
             }).spread(function (newUser, mailResult) {
-                if (mailResult&& !mailResult.response.startsWith('250'))
+                console.log('newUser', newUser);
+                console.log('mailResult', mailResult);
+                if (mailResult && !mailResult.response.startsWith('250'))
                     return done(null, false, req.flash('passportMessage', 'Errore nell\'invio della mail'));
                 return done(null, newUser);
             }).catch(function (err) {

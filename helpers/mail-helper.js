@@ -30,7 +30,7 @@ mailHelper.init = function () {
 };
 
 mailHelper.sendSignUp = function (username, password, recipient, token) {
-    var data = {username: username, password: password, url: config.host.http_baseurl + '/validate?token=' + token};
+    var data = {username: username, password: password, url: config.host.https_baseurl + '/validate?token=' + token};
     return signup.render(data).then(function (result) {
         return mailHelper.sendTemplateMail(result.html, config.mails.signup.subject, recipient);
     }).catch(function (err) {

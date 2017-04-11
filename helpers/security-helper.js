@@ -12,7 +12,7 @@ securityHelper.isLogged = function(req, res, next) {
 };
 
 securityHelper.isValidated = function(req, res, next) {
-    if (req.isAuthenticated() && req.user && req.user.validated)
+    if (req.isAuthenticated() && req.user && req.user.validation.validated)
         next();
     else
         next(errorHelper.unauthorized('Utente non convalidato'));

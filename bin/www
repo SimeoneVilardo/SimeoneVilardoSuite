@@ -11,9 +11,9 @@ var port = normalizePort(process.env.PORT || config.express.port);
 app.set('port', port);
 
 var server = https.createServer({
-    key: fs.readFileSync(path.join(__dirname, '..', 'ssl', 'private_key.key')),
-    cert: fs.readFileSync(path.join(__dirname, '..', 'ssl', 'simeonevilardo_com.crt')),
-    ca: [fs.readFileSync(path.join(__dirname, '..', 'ssl', 'AddTrustExternalCARoot.crt'))]
+    key: fs.readFileSync(config.ssl.key),
+    cert: fs.readFileSync(config.ssl.cert),
+    ca: [fs.readFileSync(config.ssl.ca_1), fs.readFileSync(config.ssl.ca_2), fs.readFileSync(config.ssl.ca_3)]
 }, app);
 
 server.listen(port);

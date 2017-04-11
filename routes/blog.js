@@ -39,7 +39,7 @@ router.get('/newpost', function (req, res, next) {
 
 router.post('/newpost', function (req, res, next) {
     if (req.isAuthenticated()) {
-        if(!req.user.validated){
+        if(!req.user.validation.validated){
             req.session.post = req.body;
             throw errorHelper.unauthorized('Utente non convalidato');
         }

@@ -41,7 +41,7 @@ dbHelper.createOrUpdatePost = function (user, post) {
     newPost.title = post.title;
     newPost.subtitle = post.subtitle;
     newPost.content = post.content;
-    newPost.validation = {validated: user.role >= config.roles.admin.code};
+    newPost.validation = {validated: ((user.role >= config.roles.admin.code) && post.validate)};
     if(newPost.validation.validated)
         newPost.validation.validationDate = Date.now();
     if(post._id)

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var securityHelper = require('../helpers/security-helper.js');
 var dbHelper = require('../helpers/database-helper.js');
+var errorHelper = require('../helpers/error-helper.js');
 var config = require('../config.js');
 
 router.get('/posts', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
@@ -20,15 +21,15 @@ router.get('/users', securityHelper.isLogged, securityHelper.setAdmin, securityH
     });
 });
 
-router.get('/editpost', function (req, res, next) {
+router.get('/editpost', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
     dbHelper.findPost({_id: req.query.id}).then(function (post) {
-        res.renderHybrid('blog/post', {post: post});
+        res.renderHybrid('management/post', {post: post});
     }).catch(function (err) {
         next(err);
     });
 });
 
-router.get('/edituser', function (req, res, next) {
+router.get('/edituser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
     dbHelper.findUser({_id: req.query.id}).then(function (user) {
         res.renderHybrid('management/user', {user: user, roles: config.roles});
     }).catch(function (err) {
@@ -36,7 +37,7 @@ router.get('/edituser', function (req, res, next) {
     });
 });
 
-router.post('/edituser', securityHelper.isLogged, function (req, res, next) {
+router.post('/edituser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
     dbHelper.findUser({_id:req.query.id}).then(function (user) {
         var data = {username: req.body.username, email: req.body.email, role: req.body.role, updateDate: Date.now()};
         if(user.validation.validated !== (req.body.validated === 'on'))
@@ -54,7 +55,7 @@ router.post('/edituser', securityHelper.isLogged, function (req, res, next) {
     });
 });
 
-router.post('/deletepost', securityHelper.isLogged, function (req, res, next) {
+router.post('/deletepost', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
     dbHelper.deletePost({_id: req.query.id}).then(function () {
         return dbHelper.findPosts();
     }).then(function (posts) {
@@ -64,7 +65,23 @@ router.post('/deletepost', securityHelper.isLogged, function (req, res, next) {
     });
 });
 
-router.post('/banuser', securityHelper.isLogged, function (req, res, next) {
+router.post('/editpost', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
+    dbHelper.createOrUpdatePost(req.user, req.body).then(function (result) {
+        if (result.ok === 1) {
+            delete req.session.post;
+            return dbHelper.findPost({_id: result.upserted[0]._id});
+        }
+        else
+            throw errorHelper.serverError('Errore nel salvataggio dell\'artcolo', 500);
+    }).then(function (post) {
+        res.renderHybrid('blog/post', {post: post});
+    }).catch(function (err) {
+        req.session.post = req.body;
+        next(err);
+    });
+});
+
+router.post('/banuser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
     dbHelper.updateUser({_id:req.query.id}, {role: -1}).then(function (result) {
         if(result.ok === 1)
             res.redirect('/management/users');
@@ -75,7 +92,7 @@ router.post('/banuser', securityHelper.isLogged, function (req, res, next) {
     });
 });
 
-router.post('/deleteuser', securityHelper.isLogged, function (req, res, next) {
+router.post('/deleteuser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
     dbHelper.deleteUser({_id: req.query.id}).then(function (cmdResult) {
         if(cmdResult.result.ok === 1)
             res.redirect('/management/users');

@@ -15,14 +15,13 @@ mongoose.Promise = bluebird;
 var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
-//const expressWinston = require('express-winston');
 var MongoStore = require('connect-mongo')(session);
 var utilityHelper = require('./helpers/utility-helper.js');
 var mailHelper = require('./helpers/mail-helper.js');
 var config = require('./config.js');
 
 mongoose.connect(config.mongodb.connection_string).then(function () {
-    logHelper.getLogger().silly('Connessione a MongoDB riuscita');
+    logHelper.getLogger().info('Connessione a MongoDB riuscita');
 }).catch(function (err) {
     logHelper.getLogger().error('Errore connessione a MongoDB', err);
 });
@@ -76,11 +75,8 @@ app.set('view engine', 'pug');
 app.use(expressWinston.logger({
     transports: [logHelper.getLogger().transports.file]
 }));
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-//app.use(expressWinston.logger(logHelper.loggerConfig()));
-app.use(cookieParser()); // read cookies (needed for auth)
-app.use(bodyParser.json()); // get information from html forms
+app.use(cookieParser());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
@@ -111,9 +107,6 @@ app.use('/', require('./routes/index.js'));
 app.use('/blog', require('./routes/blog.js'));
 app.use('/management', require('./routes/management.js'));
 
-//app.use('/', index);
-
-// catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error(config.http.error.not_found);
     err.status = 404;
@@ -132,8 +125,6 @@ if (app.get('env') === 'development') {
     });
 }
 
-// production error handler
-// no stacktraces leaked to user
 app.use(function (err, req, res, next) {
     err.status = err.status || 500;
     logHelper.getLogger().error(err);

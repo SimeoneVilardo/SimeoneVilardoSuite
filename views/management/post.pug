@@ -2,6 +2,7 @@
     form(data-ajax='true', method='post', data-ajax-mode='replace', data-ajax-target='#body-content', action= post && post._id ? '/management/editpost' : '/blog/newpost')
         if post && post._id
             input(type='hidden', name='postId', value=post._id)
+            input(type='hidden', name='validate' value=post.validation.validated ? 'true' : 'false', id='validate')
         .form-horizontal
             h4 Scrivi un articolo
             hr
@@ -17,8 +18,24 @@
                 .col-md-12
                     textarea.ckeditor(name='content')
             .form-group
-                .col-md-offset-5.col-md-2
-                    input.btn.btn-default.btn-block(type='submit')
+                if post && post._id && !post.validation.validated
+                    .col-md-offset-2.col-md-8
+                        button.btn.btn-primary.col-md-6(type='submit')
+                            i.fa.fa-floppy-o.fa-lg
+                            |  Salva
+                        button#btn-validate-post.btn.btn-primary.col-md-6(type='submit')
+                            i.fa.fa-send.fa-lg
+                            |  Pubblica
+                else
+                    .col-md-offset-5.col-md-2
+                        button.btn.btn-primary.btn-block(type='submit')
+                            i.fa.fa-floppy-o.fa-lg
+                            |  Salva
 script.
     content = (!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content;
     updateBrowserData('Crea Post', '#{url}', #{ajax}, #{back}, #{noUpdate});
+    $(document).ready(function () {
+        $(document).on('click','#btn-validate-post', function () {
+            $('#validate').attr('value', true);
+        });
+    });

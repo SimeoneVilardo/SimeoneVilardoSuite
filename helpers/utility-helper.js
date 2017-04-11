@@ -3,10 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var uglifyjs = require('uglify-js');
 var uglifycss = require('uglifycss');
-var winston = require('winston');
 var logHelper = require('./log-helper.js');
-var logger = new (require('winston').Logger)(logHelper.loggerConfig());
-
 
 utilityHelper.extend = function () {
     var extended = {};
@@ -40,29 +37,29 @@ utilityHelper.createExpDate = function (num, size) {
 };
 
 utilityHelper.optimizeScripts = function (sourcePaths, destPath) {
-    logger.log('info', 'Ottimizzazione stylesheet...');
+    logHelper.getLogger().info('Ottimizzazione stylesheet...');
     var script = uglifyjs.minify(sourcePaths);
     if (script){
-        logger.log('info', 'Script ottimizzati');
+        logHelper.getLogger().info('Script ottimizzati');
         fs.writeFile(destPath, script.code, function (err) {
             if(!err)
-                logger.info('Script salvati in ' + destPath);
+                logHelper.getLogger().info('Script salvati in ' + destPath);
             else
-                logger.error('Errore nel salvataggio degli script ottimizzati', err);
+                logHelper.getLogger().error('Errore nel salvataggio degli script ottimizzati', err);
         });
     }
 };
 
 utilityHelper.optimizeStyles = function (sourcePaths, destPath) {
-    logger.log('info', 'Ottimizzazione stylesheet...');
+    logHelper.getLogger().info('Ottimizzazione stylesheet...');
     var style = uglifycss.processFiles(sourcePaths);
     if(style){
-        logger.info('Stylesheet ottimizzati');
+        logHelper.getLogger().info('Stylesheet ottimizzati');
         fs.writeFile(destPath, style, function (err) {
             if(!err)
-                logger.info('Stylesheet salvati in ' + destPath);
+                logHelper.getLogger().info('Stylesheet salvati in ' + destPath);
             else
-                logger.error('Errore nel salvataggio degli stylesheet ottimizzati', err);
+                logHelper.getLogger().error('Errore nel salvataggio degli stylesheet ottimizzati', err);
         });
     }
 };

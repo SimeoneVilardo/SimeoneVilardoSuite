@@ -3,6 +3,7 @@ var helmet = require('helmet');
 var path = require('path');
 var pug = require('pug');
 var logHelper = require('./helpers/log-helper.js');
+var expressWinston = require('express-winston');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
@@ -14,18 +15,16 @@ mongoose.Promise = bluebird;
 var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
-var winston = require('winston');
 //const expressWinston = require('express-winston');
-var logger = new (winston.Logger)(logHelper.loggerConfig());
 var MongoStore = require('connect-mongo')(session);
 var utilityHelper = require('./helpers/utility-helper.js');
 var mailHelper = require('./helpers/mail-helper.js');
 var config = require('./config.js');
 
 mongoose.connect(config.mongodb.connection_string).then(function () {
-    logger.info('Connessione a MongoDB riuscita');
+    logHelper.getLogger().silly('Connessione a MongoDB riuscita');
 }).catch(function (err) {
-    logger.error('Errore connessione a MongoDB', err);
+    logHelper.getLogger().error('Errore connessione a MongoDB', err);
 });
 mailHelper.init();
 require('./auth/passport')(passport);
@@ -74,6 +73,9 @@ app.use(function (req, res, next) {
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.use(expressWinston.logger({
+    transports: [logHelper.getLogger().transports.file]
+}));
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 //app.use(expressWinston.logger(logHelper.loggerConfig()));
@@ -83,6 +85,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: config.session.secret,
+    secure: true,
     store: new MongoStore({mongooseConnection: mongoose.connection}),
     resave: true,
     saveUninitialized: true,
@@ -117,13 +120,10 @@ app.use(function (req, res, next) {
     next(err);
 });
 
-// error handlers
-// development error handler
-// will print stacktrace
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         err.status = err.status || 500;
-        logger.error(err);
+        logHelper.getLogger().error(err);
         res.status(err.status);
         res.renderHybrid('error', {
             errMessage: err.message,
@@ -136,7 +136,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
     err.status = err.status || 500;
-    logger.error(err);
+    logHelper.getLogger().error(err);
     res.status(err.status);
     res.renderHybrid('error', {
         errMessage: err.message,

@@ -2,15 +2,21 @@ var logHelper = {};
 var path = require('path');
 var winston = require('winston');
 
-logHelper.loggerConfig = function () {
-    var logConfig = {
-        transports: [ (!process.env.ENV || process.env.ENV === 'development') ? new winston.transports.Console({colorize: true}) : new winston.transports.File({
-            filename: path.join(__dirname, '..', 'logs', 'simeonevilardo.log')
-        })],
-            level: process.env.LOG_LEVEL || 'info',
-            handleExceptions: true
-    };
-    return logConfig;
+logHelper.getLogger = function () {
+    var logger = new (winston.Logger)({
+        transports: [
+            new (winston.transports.File)({
+                json: false,
+                formatter: function (options) {
+                    return (new Date()).toLocaleString('it-IT') + ' ' + options.level.toUpperCase() + ' ' + options.message + ((options.meta && options.meta.res && options.meta.res.statusCode) ? ' STATUS ' + options.meta.res.statusCode + ' ' : '') + ((options.level === 'error' && options.meta) ? JSON.stringify(options.meta) : '');
+                },
+                filename: path.join(__dirname, '..', 'logs', 'simeonevilardo.log'),
+                maxsize: 100000000,
+                level: process.env.LOG_LEVEL || 'info'
+            })
+        ]
+    });
+    return logger;
 };
 
 module.exports = logHelper;

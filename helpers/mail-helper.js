@@ -1,13 +1,11 @@
 var mailHelper = {};
 var path = require('path');
 var nodemailer = require("nodemailer");
-var logHelper = require('./log-helper.js');
 var EmailTemplate = require('email-templates').EmailTemplate;
-var logger = new (require('winston').Logger)(logHelper.loggerConfig());
+var logHelper = require('./log-helper.js');
 var config = require('../config');
 
 var signup = new EmailTemplate(path.join(__dirname, '..', config.mails.signup.path));
-
 var transporter = null;
 var senderMail = null;
 
@@ -24,9 +22,9 @@ mailHelper.init = function () {
     transporter = nodemailer.createTransport(smtpConfig);
     transporter.verify(function(err) {
         if (err) {
-            logger.error('Errore connessione a ' + config.smtp.host + ':' + config.smtp.port ,err);
+            logHelper.getLogger().error('Errore connessione a ' + config.smtp.host + ':' + config.smtp.port ,err);
         } else {
-            logger.info('Connessione a ' + (config.smtp.service || (config.smtp.host + ':' + config.smtp.port)) + ' riuscita');
+            logHelper.getLogger().info('Connessione a ' + (config.smtp.service || (config.smtp.host + ':' + config.smtp.port)) + ' riuscita');
         }
     });
 };

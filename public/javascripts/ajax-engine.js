@@ -61,3 +61,26 @@ $(document).on('submit', 'form[data-ajax*="true"]', function(e) {
             }
         });
 });
+
+function ajaxEngine(method, mode, targetId, url) {
+    $.ajax({
+        method: method,
+        url: url
+    }).always(function(res) {
+            var html = (typeof res === 'string' || res instanceof String) ? res : (res.responseText);
+            switch (mode) {
+                case 'replace':
+                    $(targetId).html(html);
+                    break;
+                case 'append':
+                    $(targetId).append(html);
+                    break;
+                case 'prepend':
+                    $(targetId).prepend(html);
+                    break;
+                case 'replaceWith':
+                    $(targetId).parent.html(html);
+                    break;
+            }
+        });
+}

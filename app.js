@@ -37,6 +37,7 @@ utilityHelper.optimizeScripts([
     path.join(__dirname, 'public', 'javascripts', 'nanobar', 'nanobar.min.js'),
     path.join(__dirname, 'public', 'javascripts', 'bootstrap-toggle', 'bootstrap-toggle.min.js'),
     path.join(__dirname, 'public', 'javascripts', 'bootstrap-select', 'bootstrap-select.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'jquery-bootpag', 'jquery.bootpag.min.js'),
     path.join(__dirname, 'public', 'javascripts', 'ajax-engine.js'),
     path.join(__dirname, 'public', 'javascripts', 'simeonevilardoweb.js')], path.join(__dirname, 'public', 'javascripts', 'scripts.js'));
 

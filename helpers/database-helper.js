@@ -15,6 +15,12 @@ dbHelper.findPosts = function (query, fields) {
     return Post.find(query).select(fields).lean().exec();
 };
 
+dbHelper.findPostsPaginated = function (query, page, fields) {
+    return Post.count(query).exec().then(function (count) {
+        return [count, Post.find(query, fields, {skip: config.paginator.page_size * (page-1), limit: config.paginator.page_size}).lean().exec()];
+    });
+};
+
 dbHelper.findPost = function (query, fields) {
     return Post.findOne(query).select(fields).lean().exec();
 };
@@ -33,6 +39,10 @@ dbHelper.updateUser = function (query, data) {
 
 dbHelper.updatePost = function (query, data) {
     return Post.update(query, data).exec();
+};
+
+dbHelper.countPosts = function (query) {
+    return Post.count(query).exec();
 };
 
 dbHelper.createOrUpdatePost = function (user, post) {

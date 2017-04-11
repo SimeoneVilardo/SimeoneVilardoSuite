@@ -2,10 +2,12 @@
 var router = express.Router();
 var securityHelper = require('../helpers/security-helper.js');
 var dbHelper = require('../helpers/database-helper.js');
+var config = require('../config.js');
 
 router.get('/', function (req, res, next) {
-    dbHelper.findPosts({'validation.validated': true}).then(function (posts) {
-        res.renderHybrid('index/home', {posts: posts});
+    var page = req.query.page || 1;
+    dbHelper.findPostsPaginated({'validation.validated': true}, page).spread(function (count, posts) {
+        res.renderHybrid('index/home', {posts: posts, totalPages: count / config.paginator.page_size, currentPage: page});
     }).catch(function (err) {
         next(err);
     });

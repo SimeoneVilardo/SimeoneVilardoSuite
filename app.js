@@ -109,6 +109,7 @@ app.post('/signup', passport.authenticate('local-signup', {
 app.use('/', require('./routes/index.js'));
 app.use('/blog', require('./routes/blog.js'));
 app.use('/management', require('./routes/management.js'));
+require('./routes/auth.js')(app, passport);
 
 app.use(function (req, res, next) {
     var err = new Error(config.http.error.not_found);

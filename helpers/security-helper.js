@@ -1,6 +1,5 @@
 var securityHelper = {};
 var bcrypt = require('bcrypt-nodejs');
-var dbHelper = require('./database-helper.js');
 var errorHelper = require('./error-helper.js');
 var config = require('../config');
 
@@ -16,17 +15,6 @@ securityHelper.isValidated = function(req, res, next) {
         next();
     else
         next(errorHelper.unauthorized('Utente non convalidato'));
-};
-
-securityHelper.isAuthor = function(req, res, next) {
-    dbHelper.findPost({_id: req.body.postId}).then(function (post) {
-       if(req.user.id === post.author._id)
-           next();
-       else
-           next(errorHelper.unauthorized());
-    }).catch(function (err) {
-        next(err);
-    });
 };
 
 securityHelper.isInRole = function(req, res, next) {
@@ -54,8 +42,20 @@ securityHelper.checkPassword = function (password, hashedPassword) {
     return bcrypt.compareSync(password, hashedPassword);
 };
 
-securityHelper.validateUser = function (token) {
-   return dbHelper.updateUser({'validationToken.token':token,"validationToken.expirationDate": { $gt: Date.now() } }, {$unset: {validationToken: 1 }, $set: {'validation.validated': true, 'validation.validationDate': Date.now() }});
+securityHelper.hasPermissionToEdit = function (currentUser, targetUser, newRole) {
+    if(targetUser.role === config.roles.superadmin.code)
+        throw errorHelper.unauthorized('Impossibile modificare un superadmin');
+    if(newRole > currentUser.role)
+        throw errorHelper.unauthorized('Impossibile assegnare ad un utente un ruolo superiore al proprio');
+    if(targetUser.role > currentUser.role)
+        throw errorHelper.unauthorized('Impossibile modificare un utente di ruolo superiore al proprio');
+};
+
+securityHelper.hasPermissionToDelete = function (currentUser, targetUser) {
+    if(targetUser.role === config.roles.superadmin.code)
+        throw errorHelper.unauthorized('Impossibile eliminare un superadmin');
+    if(targetUser.role > currentUser.role)
+        throw errorHelper.unauthorized('Impossibile eliminare un utente di ruolo superiore al proprio');
 };
 
 module.exports = securityHelper;

@@ -21,6 +21,10 @@ router.get('/users', securityHelper.isLogged, securityHelper.setAdmin, securityH
     });
 });
 
+router.get('/profile', securityHelper.isLogged, function (req, res, next) {
+    res.renderHybrid('management/profile');
+});
+
 router.get('/editpost', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
     dbHelper.findPost({_id: req.query.id}).then(function (post) {
         res.renderHybrid('management/post', {post: post});
@@ -38,14 +42,10 @@ router.get('/edituser', securityHelper.isLogged, securityHelper.setAdmin, securi
 });
 
 router.post('/edituser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    dbHelper.findUser({_id:req.query.id}).then(function (user) {
-        var data = {username: req.body.username, email: req.body.email, role: req.body.role, updateDate: Date.now()};
-        if(user.validation.validated !== (req.body.validated === 'on'))
-            data.validation = {validated: req.body.validated === 'on', validationDate: Date.now()};
-        if(req.body.password && req.body.confirmPassword && req.body.password === req.body.confirmPassword)
-            data.password = securityHelper.hashPassword(req.body.password);
-        return dbHelper.updateUser({_id:req.query.id}, data);
-    }).then(function (result) {
+    var data = {username: req.body.username, email: req.body.email, role: parseInt(req.body.role), updateDate: Date.now(), validate: req.body.validated === 'on'};
+    if(req.body.password && req.body.confirmPassword && req.body.password === req.body.confirmPassword)
+        data.password = securityHelper.hashPassword(req.body.password);
+    dbHelper.updateUser({_id:req.query.id}, data, req.user).then(function (result) {
         if(result.nModified === 1)
             res.redirect('/management/users');
         else
@@ -56,7 +56,7 @@ router.post('/edituser', securityHelper.isLogged, securityHelper.setAdmin, secur
 });
 
 router.post('/deletepost', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    dbHelper.deletePost({_id: req.query.id}).then(function () {
+    dbHelper.deletePost({_id: req.query.id}, req.user).then(function () {
         return dbHelper.findPosts();
     }).then(function (posts) {
         res.renderHybrid('management/posts', {posts: posts});
@@ -82,7 +82,18 @@ router.post('/editpost', securityHelper.isLogged, securityHelper.setAdmin, secur
 });
 
 router.post('/banuser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    dbHelper.updateUser({_id:req.query.id}, {role: -1}).then(function (result) {
+    dbHelper.updateUser({_id:req.query.id}, {role: -1}, req.user).then(function (result) {
+        if(result.ok === 1)
+            res.redirect('/management/users');
+        else
+            throw errorHelper.serverError('Errore nella modifica dell\'utente', 500);
+    }).catch(function (err) {
+        next(err);
+    });
+});
+
+router.post('/unbanuser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
+    dbHelper.updateUser({_id:req.query.id}, {role: 1}, req.user).then(function (result) {
         if(result.ok === 1)
             res.redirect('/management/users');
         else
@@ -93,7 +104,7 @@ router.post('/banuser', securityHelper.isLogged, securityHelper.setAdmin, securi
 });
 
 router.post('/deleteuser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    dbHelper.deleteUser({_id: req.query.id}).then(function (cmdResult) {
+    dbHelper.deleteUser({_id: req.query.id}, req.user).then(function (cmdResult) {
         if(cmdResult.result.ok === 1)
             res.redirect('/management/users');
         else

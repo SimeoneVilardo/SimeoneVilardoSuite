@@ -45,8 +45,6 @@ module.exports = function (passport) {
                 done(null, false, req.flash('passportMessage', 'Errore durante la registrazione'));
                 p.cancel();
             }).spread(function (newUser, mailResult) {
-                console.log('newUser', newUser);
-                console.log('mailResult', mailResult);
                 if (mailResult && !mailResult.response.startsWith('250'))
                     return done(null, false, req.flash('passportMessage', 'Errore nell\'invio della mail'));
                 return done(null, newUser);

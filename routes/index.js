@@ -6,7 +6,7 @@ var config = require('../config.js');
 
 router.get('/', function (req, res, next) {
     var page = req.query.page || 1;
-    dbHelper.findPostsPaginated({'validation.validated': true}, page).then(function (result) {
+    dbHelper.findPostsPaginated({'validation.validated': true}, page, {}, {'validation.validationDate': -1}).then(function (result) {
         res.renderHybrid('index/home', {posts: result.docs, totalPages: result.pages, currentPage: result.page});
     }).catch(function (err) {
         next(err);
@@ -30,7 +30,7 @@ router.get('/signup', function (req, res, next) {
 });
 
 router.get('/validate', function (req, res, next) {
-    securityHelper.validateUser(req.query.token).then(function (result) {
+    dbHelper.validateUser(req.query.token).then(function (result) {
         if (result.nModified === 1)
             res.redirect('/login');
         else

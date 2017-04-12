@@ -9,6 +9,10 @@ errorHelper.unauthorized = function(message) {
     return {message: message || config.http.error.unauthorized, status: 401};
 };
 
+errorHelper.badRequest = function(message) {
+    return {message: message || config.http.error.unauthorized, status: 401};
+};
+
 errorHelper.serverError = function(message, status) {
     return {message: message, status: status};
 };

@@ -1,66 +1,68 @@
 doctype html
 html
-  head
-    meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    title SimeoneVilardo
-    link(rel='stylesheet', type='text/css', href='/stylesheets/styles.css')
-    script(src='/javascripts/scripts.js')
-    script(src='/javascripts/ckeditor/ckeditor.js')
-  body
-    nav.navbar.navbar-default.navbar-custom.navbar-fixed-top
-      .container-fluid
-        .navbar-header.page-scroll
-          button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
-            span.sr-only Toggle navigation
-            |  Menu
-            i.fa.fa-bars
-          |  
-          a.navbar-brand(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/') Simeone Vilardo
-        #bs-example-navbar-collapse-1.collapse.navbar-collapse
-          ul.nav.navbar-nav.navbar-right
-            if !currentUser
-              li
-                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/login') Accedi
-              li
-                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/signup') Registrati
-            else
-              li
-                a(style='cursor:pointer') #{currentUser.username}
-                if currentUser.role >= roles.admin.code
-                  li
-                    a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/posts') Gestisci Blog
-                  li
-                    a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/users') Gestisci Utenti
-              li
-                a(href='/logout') Esci
-            li
-              a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/info') Informazioni
-            li
-              a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/contacts') Contattami
-            li
-              a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/newpost') Scrivi Articolo
-    header.intro-header(style="background-image: url('/images/home-bg.jpg')")
-      .container
-        .row
-          .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
-            .site-heading
-              h1 Simeone Vilardo
-              hr.small
-              |  
-              span.subheading Code and Stuff
-    #body-content
-      div !{partialView}
-    hr
-    footer
-      .container
-        .row
-          .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
-            ul.list-inline.text-center
-              li
-                a(href='https://github.com/SimeoneVilardo/SimeoneVilardoWeb')
-                  span.fa-stack.fa-lg
-                    i.fa.fa-circle.fa-stack-2x
-                    i.fa.fa-github.fa-stack-1x.fa-inverse
-            p.copyright.text-muted Copyright &copy; Simeone Vilardo 2017
+    head
+        meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title SimeoneVilardo
+        link(rel='stylesheet', type='text/css', href='/stylesheets/styles.css')
+        script(src='/javascripts/scripts.js')
+        script(src='/javascripts/ckeditor/ckeditor.js')
+    body
+        nav.navbar.navbar-default.navbar-custom.navbar-fixed-top
+            .container-fluid
+                .navbar-header.page-scroll
+                    button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
+                        span.sr-only Toggle navigation
+                        |  Menu
+                        i.fa.fa-bars
+                    |
+                    a.navbar-brand(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/') Simeone Vilardo
+                #bs-example-navbar-collapse-1.collapse.navbar-collapse
+                    ul.nav.navbar-nav.navbar-right
+                        if !currentUser
+                            li
+                                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/login') Accedi
+                            li
+                                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/signup') Registrati
+                        else
+                            li
+                                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/profile') #{currentUser.username}
+                                if currentUser.role >= roles.admin.code
+                                    li
+                                        a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/posts') Gestisci Blog
+                                    li
+                                        a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/users') Gestisci Utenti
+                        li
+                            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/info') Informazioni
+                        li
+                            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/contacts') Contattami
+                        li
+                            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/newpost') Scrivi Articolo
+                        if currentUser
+                            li
+                                a(href='/logout') Esci
+        a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/')
+            header.intro-header(style="background-image: url('/images/home-bg.jpg')")
+                .container
+                    .row
+                        .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
+                            .site-heading
+                                h1 Simeone Vilardo
+                                hr.small
+                                |
+                                span.subheading Code and Stuff
+        #body-content
+            div !{partialView}
+        hr
+        footer
+            .container
+                .row
+                    .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
+                        ul.list-inline.text-center
+                            li
+                                a(href='https://github.com/SimeoneVilardo/SimeoneVilardoWeb')
+                                    span.fa-stack.fa-lg
+                                        i.fa.fa-circle.fa-stack-2x
+                                        i.fa.fa-github.fa-stack-1x.fa-inverse
+                        p.copyright.text-muted Copyright &copy; Simeone Vilardo 2017

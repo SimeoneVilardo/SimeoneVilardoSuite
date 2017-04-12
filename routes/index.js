@@ -6,8 +6,8 @@ var config = require('../config.js');
 
 router.get('/', function (req, res, next) {
     var page = req.query.page || 1;
-    dbHelper.findPostsPaginated({'validation.validated': true}, page).spread(function (count, posts) {
-        res.renderHybrid('index/home', {posts: posts, totalPages: count / config.paginator.page_size, currentPage: page});
+    dbHelper.findPostsPaginated({'validation.validated': true}, page).then(function (result) {
+        res.renderHybrid('index/home', {posts: result.docs, totalPages: result.pages, currentPage: result.page});
     }).catch(function (err) {
         next(err);
     });

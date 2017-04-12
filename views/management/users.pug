@@ -33,7 +33,7 @@
                                 a.btn.btn-warning(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/banuser?id=' + user._id)
                                     i.fa.fa-ban.fa-lg
                             td
-                                a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/deleteuser?id=' + user._id)
+                                a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', data-ajax-confirm='Sei sicuro di voler eliminare l\'utente?', data-ajax-ok='Si', data-ajax-cancel='No', href='/management/deleteuser?id=' + user._id)
                                     i.fa.fa-trash-o.fa-lg
 script.
     updateBrowserData('Gestione utenti', '#{url}', #{ajax}, #{back}, #{noUpdate});

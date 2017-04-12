@@ -37,6 +37,7 @@ utilityHelper.optimizeScripts([
     path.join(__dirname, 'public', 'javascripts', 'nanobar', 'nanobar.min.js'),
     path.join(__dirname, 'public', 'javascripts', 'bootstrap-toggle', 'bootstrap-toggle.min.js'),
     path.join(__dirname, 'public', 'javascripts', 'bootstrap-select', 'bootstrap-select.min.js'),
+    path.join(__dirname, 'public', 'javascripts', 'bootstrap-dialog', 'bootstrap-dialog.min.js'),
     path.join(__dirname, 'public', 'javascripts', 'jquery-bootpag', 'jquery.bootpag.min.js'),
     path.join(__dirname, 'public', 'javascripts', 'ajax-engine.js'),
     path.join(__dirname, 'public', 'javascripts', 'simeonevilardoweb.js')], path.join(__dirname, 'public', 'javascripts', 'scripts.js'));
@@ -45,6 +46,7 @@ utilityHelper.optimizeStyles([
     path.join(__dirname, 'public', 'stylesheets', 'bootstrap', 'bootstrap.min.css'),
     path.join(__dirname, 'public', 'stylesheets', 'bootstrap-select', 'bootstrap-select.min.css'),
     path.join(__dirname, 'public', 'stylesheets', 'bootstrap-toggle', 'bootstrap-toggle.min.css'),
+    path.join(__dirname, 'public', 'stylesheets', 'bootstrap-dialog', 'bootstrap-dialog.min.css'),
     path.join(__dirname, 'public', 'stylesheets', 'font-awesome', 'font-awesome.min.css'),
     path.join(__dirname, 'public', 'stylesheets', 'simeonevilardoweb.css')], path.join(__dirname, 'public', 'stylesheets', 'styles.css'));
 

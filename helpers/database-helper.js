@@ -15,10 +15,15 @@ dbHelper.findPosts = function (query, fields) {
     return Post.find(query).select(fields).lean().exec();
 };
 
-dbHelper.findPostsPaginated = function (query, page, fields) {
+/*dbHelper.findPostsPaginated = function (query, page, fields) {
     return Post.count(query).exec().then(function (count) {
         return [count, Post.find(query, fields, {skip: config.paginator.page_size * (page-1), limit: config.paginator.page_size}).lean().exec()];
     });
+};*/
+
+dbHelper.findPostsPaginated = function (query, page, fields) {
+    var offset = page * 5;
+    return Post.paginate(query, {limit: 5, page: page, lean:true });
 };
 
 dbHelper.findPost = function (query, fields) {

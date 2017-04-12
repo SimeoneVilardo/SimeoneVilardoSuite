@@ -29,8 +29,8 @@
                 else
                     .col-md-offset-5.col-md-2
                         button.btn.btn-primary.btn-block(type='submit')
-                            i.fa.fa-floppy-o.fa-lg
-                            |  Salva
+                            i.fa.fa-send.fa-lg
+                            |  Invia
 script.
     content = (!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content;
     updateBrowserData('Crea Post', '#{url}', #{ajax}, #{back}, #{noUpdate});

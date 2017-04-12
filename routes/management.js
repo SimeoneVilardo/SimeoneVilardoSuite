@@ -125,5 +125,4 @@ router.get('/disable', securityHelper.isLogged,securityHelper.setAdmin, security
     });
 });
 
-
 module.exports = router;

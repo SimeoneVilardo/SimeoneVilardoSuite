@@ -52,7 +52,7 @@ module.exports = function (passport) {
             }).spread(function (newUser, mailResult) {
                 if (mailResult && !mailResult.response.startsWith('250'))
                     return done(null, false, req.flash('passportMessage', 'Errore nell\'invio della mail'));
-                return done(null, newUser);
+                return done(null, newUser.toObject());
             }).catch(function (err) {
                 return done(err);
             })
@@ -90,7 +90,7 @@ module.exports = function (passport) {
                 var email = profile.email || profile.emails[0].value;
                 var p = User.findOne({email: email}).exec().then(function (user) {
                     if (user) {
-                        if (!user.facebook) {
+                        if (!((user.toObject()).facebook)) {
                             user.facebook = {
                                 id: profile.id,
                                 token: token,
@@ -99,7 +99,7 @@ module.exports = function (passport) {
                             return user.save();
                         }
                         else {
-                            done(null, user);
+                            done(null, user.toObject());
                             p.cancel();
                         }
                     }
@@ -116,7 +116,7 @@ module.exports = function (passport) {
                         return newUser.save();
                     }
                 }).then(function (newUser) {
-                    return done(null, newUser);
+                    return done(null, newUser.toObject());
                 }).catch(function (err) {
                     if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
                         req.session.social = {facebook: {usernameDuplicate: true, originalUsername: username}};
@@ -142,7 +142,7 @@ module.exports = function (passport) {
                 var email = profile.emails[0].value;
                 var p = User.findOne({email: email}).exec().then(function (user) {
                     if (user) {
-                        if (!user.twitter) {
+                        if (!((user.toObject()).twitter)) {
                             user.twitter = {
                                 id: profile.id,
                                 token: token,
@@ -151,7 +151,7 @@ module.exports = function (passport) {
                             return user.save();
                         }
                         else {
-                            done(null, user);
+                            done(null, user.toObject());
                             p.cancel();
                         }
                     }
@@ -169,7 +169,7 @@ module.exports = function (passport) {
                         return newUser.save();
                     }
                 }).then(function (newUser) {
-                    return done(null, newUser);
+                    return done(null, newUser.toObject());
                 }).catch(function (err) {
                     if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
                         req.session.social = {twitter: {usernameDuplicate: true, originalUsername: username}};
@@ -194,12 +194,12 @@ module.exports = function (passport) {
                 var email = profile.emails[0].value;
                 var p = User.findOne({email: email}).exec().then(function (user) {
                     if (user) {
-                        if (!user.google) {
+                        if (!((user.toObject()).google)) {
                             user.google = {id: profile.id, token: token, username: profile.displayName};
                             return user.save();
                         }
                         else {
-                            done(null, user);
+                            done(null, user.toObject());
                             p.cancel();
                         }
                     }
@@ -212,7 +212,7 @@ module.exports = function (passport) {
                         return newUser.save();
                     }
                 }).then(function (newUser) {
-                    return done(null, newUser);
+                    return done(null, newUser.toObject());
                 }).catch(function (err) {
                     if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
                         req.session.social = {google: {usernameDuplicate: true, originalUsername: username}};

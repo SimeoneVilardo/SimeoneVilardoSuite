@@ -87,3 +87,21 @@ function updateBrowserData(title, url, ajax, back, noUpdate) {
         document.title = title + ' - Simeone Vilardo';
     }
 }
+
+    window.addEventListener("load", function(){
+        window.cookieconsent.initialise({
+            "palette": {
+                "popup": {
+                    "background": "#252e39"
+                },
+                "button": {
+                    "background": "#14a7d0"
+                }
+            },
+            "content": {
+                "message": "Questo sito utilizza cookie tecnici e di profilazione per assicurarti una migliore esperienza.",
+                "dismiss": "Capito!",
+                "link": "Ulteriori informazioni."
+            }
+        })});
+

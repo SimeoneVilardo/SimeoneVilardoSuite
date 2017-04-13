@@ -5,9 +5,9 @@ var crypto = require('crypto');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-    username: { type: String, required: true},
-    email: { type: String, required: true},
-    password: { type: String, required: true},
+    username: { type: String, required: true, unique: true},
+    email: { type: String, required: true, unique: true},
+    password: { type: String},
     role: { type: Number, required: true, default: config.roles.user.code},
     creationDate: { type: Date, default: Date.now },
     updateDate: {type: Date},
@@ -16,12 +16,24 @@ var userSchema = new Schema({
         validationDate: { type: Date }
     },
     validationToken: {
-        token: {type: String, default: crypto.randomBytes(config.token.size).toString('hex')},
-        expirationDate: { type: Date, default: utilityHelper.createExpDate(1, utilityHelper.sizedate.day) }
+        token: {type: String},
+        expirationDate: { type: Date }
     },
     facebook: {
         id: {type: String}
+    },
+    twitter: {
+        id: {type: String}
+    },
+    google: {
+        id: {type: String}
     }
+});
+
+userSchema.pre('save', function(next) {
+    if(this.validation.validated === false)
+        this.validationToken = {token: crypto.randomBytes(config.token.size).toString('hex'), expirationDate: utilityHelper.createExpDate(1, utilityHelper.sizedate.day)};
+    next();
 });
 
 var user = mongoose.model('user', userSchema);

@@ -76,22 +76,21 @@ module.exports = function (passport) {
             clientID: config.auth.facebook.client_id,
             clientSecret: config.auth.facebook.client_secret,
             callbackURL: config.auth.facebook.callback_URL,
-            profileFields: ['id', 'name', 'email'],
-            passReqToCallback: true
+            profileFields: ['id', 'displayName', 'email']
         },
         function (token, refreshToken, profile, done) {
-            console.log(token);
-            console.log(refreshToken);
-            console.log(profile);
-            var email = profile.emails[0].value;
-            dbHelper.findUser({email: email}).then(function (user) {
+            var email =  profile.email || profile.emails[0].value;
+            var p = dbHelper.findUser({email: email}).then(function (user) {
                 if (user) {
-                    console.log('Trovato un utente con mail ' + email, user);
+                    done(null, user);
+                    p.cancel();
                 }
                 else {
                     var newUser = new User();
-                    newUser.username = profile.name.givenName + ' ' + profile.name.familyName;
+                    newUser.facebook.id = profile.id;
+                    newUser.username = profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName);
                     newUser.email = email;
+                    newUser.validation = {validated: true, validationDate: Date.now()};
                     return newUser.save();
                 }
             }).then(function (newUser) {

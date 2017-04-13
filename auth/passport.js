@@ -84,7 +84,7 @@ module.exports = function (passport) {
             process.nextTick(function () {
                 var username = profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName);
                 var email = profile.email || profile.emails[0].value;
-                var p = dbHelper.findUser({$or: [{username: username}, {email: email}]}).then(function (user) {
+                var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
                         done(null, user);
                         p.cancel();
@@ -115,7 +115,7 @@ module.exports = function (passport) {
             process.nextTick(function () {
                 var username = profile.displayName || profile.username;
                 var email = profile.emails[0].value;
-                var p = dbHelper.findUser({$or: [{username: username}, {email: email}]}).then(function (user) {
+                var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
                         done(null, user);
                         p.cancel();
@@ -146,7 +146,7 @@ module.exports = function (passport) {
             process.nextTick(function () {
                 var username = profile.displayName;
                 var email = profile.emails[0].value;
-                var p = dbHelper.findUser({$or: [{username: username}, {email: email}]}).then(function (user) {
+                var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
                         done(null, user);
                         p.cancel();

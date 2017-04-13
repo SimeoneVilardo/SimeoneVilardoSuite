@@ -19,7 +19,7 @@ module.exports = function(router, passport) {
         passport.authenticate('facebook', {
             authType: 'rerequest',
             successRedirect: '/',
-            failureRedirect: '/'
+            failureRedirect: '/login'
         }));
 
     router.get('/auth/twitter', passport.authenticate('twitter', {
@@ -28,8 +28,8 @@ module.exports = function(router, passport) {
 
     router.get('/auth/twitter/callback',
         passport.authenticate('twitter', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
+            successRedirect: '/',
+            failureRedirect: '/login'
         }));
 
     router.get('/auth/google', passport.authenticate('google', {
@@ -41,9 +41,4 @@ module.exports = function(router, passport) {
             successRedirect: '/profile',
             failureRedirect: '/'
         }));
-
-    router.get('/auth/facebook/login', passport.authorize('facebook', {
-        scope: 'email'
-    }));
-
 };

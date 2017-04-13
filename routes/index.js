@@ -17,6 +17,14 @@ router.get('/info', function (req, res, next) {
     res.renderHybrid('index/info');
 });
 
+router.get('/terms', function (req, res, next) {
+    res.renderHybrid('index/terms');
+});
+
+router.get('/privacy', function (req, res, next) {
+    res.renderHybrid('index/privacy');
+});
+
 router.get('/contacts', function (req, res, next) {
     res.renderHybrid('index/contacts');
 });

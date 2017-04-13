@@ -20,13 +20,16 @@ var userSchema = new Schema({
         expirationDate: { type: Date }
     },
     facebook: {
-        id: {type: String}
+        id: {type: String},
+        token: {type: String}
     },
     twitter: {
-        id: {type: String}
+        id: {type: String},
+        token: {type: String}
     },
     google: {
-        id: {type: String}
+        id: {type: String},
+        token: {type: String}
     }
 });
 

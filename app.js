@@ -83,28 +83,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-    secret: config.session.secret,
-    secure: true,
+    secret:  config.session.secret,
+    name: 'SVC',
     store: new MongoStore({mongooseConnection: mongoose.connection}),
-    resave: true,
-    saveUninitialized: true,
-    cookie: {expires: utilityHelper.createExpDate(1, config.sizedate.week)}
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: (app.get('env') === 'production'),
+        domain: (app.get('env') === 'production') ? 'simeonevilardo.com' : 'localhost',
+        expires: utilityHelper.createExpDate(1, config.sizedate.week)
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-
-app.post('/login', passport.authenticate('local-login', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true
-}));
-
-app.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: '/', // redirect to the secure profile section
-    failureRedirect: '/signup', // redirect back to the signup page if there is an error
-    failureFlash: true // allow flash messages
-}));
 
 app.use('/', require('./routes/index.js'));
 app.use('/blog', require('./routes/blog.js'));

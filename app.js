@@ -82,7 +82,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-    secret:  config.session.secret,
+    secret: config.session.secret,
     name: 'SVC',
     store: new MongoStore({mongooseConnection: mongoose.connection}),
     resave: false,
@@ -114,7 +114,7 @@ if (app.get('env') === 'development') {
         err.status = err.status || 500;
         logHelper.getLogger().error(err);
         res.status(err.status);
-        res.renderHybrid('error', {
+        res.renderHybrid((err.redirect && err.redirect.url) ? err.redirect.url : 'error', (err.redirect && err.redirect.data) ? err.redirect.data : {
             errMessage: err.message,
             error: err
         });
@@ -125,7 +125,7 @@ app.use(function (err, req, res, next) {
     err.status = err.status || 500;
     logHelper.getLogger().error(err);
     res.status(err.status);
-    res.renderHybrid('error', {
+    res.renderHybrid((err.redirect && err.redirect.url) ? err.redirect.url : 'error', (err.redirect && err.redirect.data) ? err.redirect.data : {
         errMessage: err.message,
         error: {}
     });

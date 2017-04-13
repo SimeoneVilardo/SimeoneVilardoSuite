@@ -6,6 +6,7 @@ var securityHelper = require('../helpers/security-helper.js');
 var User = require('../models/user');
 var dbHelper = require('../helpers/database-helper.js');
 var mailHelper = require('../helpers/mail-helper.js');
+var utilityHelper = require('../helpers/utility-helper.js');
 var config = require('../config.js');
 
 module.exports = function (passport) {
@@ -78,11 +79,14 @@ module.exports = function (passport) {
             clientID: config.auth.facebook.client_id,
             clientSecret: config.auth.facebook.client_secret,
             callbackURL: config.auth.facebook.callback_URL,
-            profileFields: ['id', 'displayName', 'email']
+            profileFields: ['id', 'displayName', 'email'],
+            passReqToCallback: true
         },
-        function (token, refreshToken, profile, done) {
+        function (req, token, refreshToken, profile, done) {
             process.nextTick(function () {
                 var username = profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName);
+                if(req.session.social && req.session.social.facebook && req.session.social.facebook.usernameDuplicate && (req.session.social.facebook.originalUsername === username))
+                    username = req.session.social.facebook.altUsername;
                 var email = profile.email || profile.emails[0].value;
                 var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
@@ -100,6 +104,10 @@ module.exports = function (passport) {
                 }).then(function (newUser) {
                     return done(null, newUser);
                 }).catch(function (err) {
+                    if(err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username'){
+                        req.session.social = {facebook: {usernameDuplicate: true, originalUsername: username}};
+                        err.redirect = {url: '/auth/username', data: {service: config.auth.facebook.service}};
+                    }
                     return done(err);
                 });
             });
@@ -109,11 +117,14 @@ module.exports = function (passport) {
             consumerKey: config.auth.twitter.client_id,
             consumerSecret: config.auth.twitter.client_secret,
             callbackURL: config.auth.twitter.callback_URL,
-            userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true"
+            userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
+            passReqToCallback: true
         },
-        function (token, tokenSecret, profile, done) {
+        function (req, token, tokenSecret, profile, done) {
             process.nextTick(function () {
                 var username = profile.displayName || profile.username;
+                if(req.session.social && req.session.social.twitter && req.session.social.twitter.usernameDuplicate && (req.session.social.twitter.originalUsername === username))
+                    username = req.session.social.twitter.altUsername;
                 var email = profile.emails[0].value;
                 var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
@@ -132,6 +143,10 @@ module.exports = function (passport) {
                 }).then(function (newUser) {
                     return done(null, newUser);
                 }).catch(function (err) {
+                    if(err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username'){
+                        req.session.social = {twitter: {usernameDuplicate: true, originalUsername: username}};
+                        err.redirect = {url: '/auth/username', data: {service: config.auth.twitter.service}};
+                    }
                     return done(err);
                 });
             });
@@ -140,11 +155,14 @@ module.exports = function (passport) {
     passport.use(new GoogleStrategy({
             clientID: config.auth.google.client_id,
             clientSecret: config.auth.google.client_secret,
-            callbackURL: config.auth.google.callback_URL
+            callbackURL: config.auth.google.callback_URL,
+            passReqToCallback: true
         },
-        function (token, refreshToken, profile, done) {
+        function (req, token, refreshToken, profile, done) {
             process.nextTick(function () {
                 var username = profile.displayName;
+                if(req.session.social && req.session.social.google && req.session.social.google.usernameDuplicate && (req.session.social.google.originalUsername === username))
+                    username = req.session.social.google.altUsername;
                 var email = profile.emails[0].value;
                 var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
@@ -162,6 +180,10 @@ module.exports = function (passport) {
                 }).then(function (newUser) {
                     return done(null, newUser);
                 }).catch(function (err) {
+                    if(err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username'){
+                        req.session.social = {google: {usernameDuplicate: true, originalUsername: username}};
+                        err.redirect = {url: '/auth/username', data: {service: config.auth.google.service}};
+                    }
                     return done(err);
                 });
 

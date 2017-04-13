@@ -10,7 +10,7 @@ errorHelper.unauthorized = function(message) {
 };
 
 errorHelper.badRequest = function(message) {
-    return {message: message || config.http.error.unauthorized, status: 401};
+    return {message: message || config.http.error.badRequest, status: 403};
 };
 
 errorHelper.serverError = function(message, status) {

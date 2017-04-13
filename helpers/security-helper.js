@@ -10,6 +10,13 @@ securityHelper.isLogged = function(req, res, next) {
         res.redirect('/login');
 };
 
+securityHelper.isUsernameDuplicated = function(req, res, next) {
+    if(req.session.social && req.session.social[req.body.service] && req.session.social[req.body.service].usernameDuplicate)
+        next();
+    else
+        res.redirect('/');
+};
+
 securityHelper.isValidated = function(req, res, next) {
     if (req.isAuthenticated() && req.user && req.user.validation.validated)
         next();

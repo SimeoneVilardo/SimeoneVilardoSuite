@@ -1,0 +1,23 @@
+.container
+    .row
+        .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
+            form(action='/auth/username', method='post')
+                input(type='hidden', name='service', value=service)
+                .form-horizontal
+                    h4 Username
+                    hr
+                    .form-group
+                        label.col-md-12 Esiste già un utente con lo stesso username.
+                        label.col-md-12 Inserisci un username differente:
+                    .form-group
+                        label.control-label.col-md-2(for='Username') Username
+                        .col-md-10
+                            input#Username.form-control.text-box.single-line(name='username', type='text')
+                    .form-group
+                        .col-md-offset-2.col-md-10
+                            input.btn.btn-default(type='submit', value='Conferma')
+                    include ../alerts.pug
+                    +alerts(passportMessage)
+
+script.
+    updateBrowserData('Username', '#{url}', #{ajax}, #{back}, #{noUpdate});

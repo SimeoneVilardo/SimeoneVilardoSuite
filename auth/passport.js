@@ -88,7 +88,7 @@ module.exports = function (passport) {
                 if (req.session.social && req.session.social.facebook && req.session.social.facebook.usernameDuplicate && (req.session.social.facebook.originalUsername === username))
                     username = req.session.social.facebook.altUsername;
                 var email = profile.email || profile.emails[0].value;
-                var p = dbHelper.findUser({email: email}).then(function (user) {
+                var p = User.findOne({email: email}).exec().then(function (user) {
                     if (user) {
                         if (!user.facebook) {
                             user.facebook = {
@@ -140,7 +140,7 @@ module.exports = function (passport) {
                 if (req.session.social && req.session.social.twitter && req.session.social.twitter.usernameDuplicate && (req.session.social.twitter.originalUsername === username))
                     username = req.session.social.twitter.altUsername;
                 var email = profile.emails[0].value;
-                var p = dbHelper.findUser({email: email}).then(function (user) {
+                var p = User.findOne({email: email}).exec().then(function (user) {
                     if (user) {
                         if (!user.twitter) {
                             user.twitter = {
@@ -192,7 +192,7 @@ module.exports = function (passport) {
                 if (req.session.social && req.session.social.google && req.session.social.google.usernameDuplicate && (req.session.social.google.originalUsername === username))
                     username = req.session.social.google.altUsername;
                 var email = profile.emails[0].value;
-                var p = dbHelper.findUser({email: email}).then(function (user) {
+                var p = User.findOne({email: email}).exec().then(function (user) {
                     if (user) {
                         if (!user.google) {
                             user.google = {id: profile.id, token: token, username: profile.displayName};

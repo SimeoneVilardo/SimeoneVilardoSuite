@@ -1,8 +1,10 @@
 var LocalStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 var securityHelper = require('../helpers/security-helper.js');
 var User = require('../models/user');
 var dbHelper = require('../helpers/database-helper.js');
 var mailHelper = require('../helpers/mail-helper.js');
+var config = require('../config.js');
 
 module.exports = function (passport) {
     passport.serializeUser(function (user, done) {
@@ -24,12 +26,12 @@ module.exports = function (passport) {
         },
         function (req, username, password, done) {
             var p = dbHelper.findUser({$or: [{username: username}, {email: req.body.email}]}, 'username').then(function (user) {
-                if (user){
+                if (user) {
                     done(null, false, req.flash('passportMessage', 'Utente già registrato'));
                     p.cancel();
                     return;
                 }
-                if (password && (password !== req.body.confirmPassword)){
+                if (password && (password !== req.body.confirmPassword)) {
                     done(null, false, req.flash('passportMessage', 'Le password non combaciano'));
                     p.cancel();
                     return;
@@ -40,7 +42,7 @@ module.exports = function (passport) {
                 newUser.password = securityHelper.hashPassword(password);
                 return [newUser.save(), password];
             }).spread(function (newUser, password) {
-                if(newUser)
+                if (newUser)
                     return [newUser, mailHelper.sendSignUp(newUser.username, password, newUser.email, newUser.validationToken.token)];
                 done(null, false, req.flash('passportMessage', 'Errore durante la registrazione'));
                 p.cancel();
@@ -65,6 +67,35 @@ module.exports = function (passport) {
                 if (!securityHelper.checkPassword(password, user.password))
                     return done(null, false, req.flash('passportMessage', 'Password errata'));
                 return done(null, user);
+            }).catch(function (err) {
+                return done(err);
+            });
+        }));
+
+    passport.use(new FacebookStrategy({
+            clientID: config.auth.facebook.client_id,
+            clientSecret: config.auth.facebook.client_secret,
+            callbackURL: config.auth.facebook.callback_URL,
+            profileFields: ['id', 'name', 'email'],
+            passReqToCallback: true
+        },
+        function (token, refreshToken, profile, done) {
+            console.log(token);
+            console.log(refreshToken);
+            console.log(profile);
+            var email = profile.emails[0].value;
+            dbHelper.findUser({email: email}).then(function (user) {
+                if (user) {
+                    console.log('Trovato un utente con mail ' + email, user);
+                }
+                else {
+                    var newUser = new User();
+                    newUser.username = profile.name.givenName + ' ' + profile.name.familyName;
+                    newUser.email = email;
+                    return newUser.save();
+                }
+            }).then(function (newUser) {
+                return done(null, newUser);
             }).catch(function (err) {
                 return done(err);
             });

@@ -5,18 +5,31 @@
         .form-horizontal
           h4 Login
           hr
-          .form-group
-            label.control-label.col-md-2(for='Username') Username
-            .col-md-10
-              input#Username.form-control.text-box.single-line(name='username', type='text')
-          .form-group
-            label.control-label.col-md-2(for='Password') Password
-            .col-md-10
-              input#Password.form-control.text-box.single-line.password(name='password', type='password')
-          .form-group
-            .col-md-offset-2.col-md-10
-              input.btn.btn-default(type='submit', value='Accedi')
-          include ../alerts.pug
-          +alerts(passportMessage)
+          .col-md-8
+            .form-group
+              label.control-label.col-md-2(for='Username') Username
+              .col-md-10
+                input#Username.form-control.text-box.single-line(name='username', type='text')
+            .form-group
+              label.control-label.col-md-2(for='Password') Password
+              .col-md-10
+                input#Password.form-control.text-box.single-line.password(name='password', type='password')
+            .form-group
+              .col-md-offset-2.col-md-10
+                input.btn.btn-default(type='submit', value='Accedi')
+            include ../alerts.pug
+            +alerts(passportMessage)
+          .col-md-offset-1.col-md-2
+            .btn-group-vertical
+              a.btn.btn-primary(href='/auth/facebook', style='background-color:#3b5998')
+                i.fa.fa-facebook-official.fa-lg
+                |  Facebook
+              a.btn.btn-info(href='/auth/twitter', style='background-color:#1da1f2')
+                i.fa.fa-twitter.fa-lg
+                |  Twitter
+              a.btn.btn-danger(href='/auth/google', style='background-color:#db4437')
+                i.fa.fa-google.fa-lg
+                |  Google
+
 script.
   updateBrowserData('Login', '#{url}', #{ajax}, #{back}, #{noUpdate});

@@ -5,6 +5,15 @@ var uglifyjs = require('uglify-js');
 var uglifycss = require('uglifycss');
 var logHelper = require('./log-helper.js');
 
+utilityHelper.sizedate = {};
+utilityHelper.sizedate.msec = 1;
+utilityHelper.sizedate.sec = utilityHelper.sizedate.msec * 1000;
+utilityHelper.sizedate.min = utilityHelper.sizedate.sec * 60;
+utilityHelper.sizedate.hour = utilityHelper.sizedate.min * 60;
+utilityHelper.sizedate.day = utilityHelper.sizedate.hour * 24;
+utilityHelper.sizedate.week = utilityHelper.sizedate.day * 7;
+utilityHelper.sizedate.year = utilityHelper.sizedate.week * 92;
+
 utilityHelper.extend = function () {
     var extended = {};
     var deep = false;

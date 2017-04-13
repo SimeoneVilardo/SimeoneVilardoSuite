@@ -72,7 +72,6 @@ app.use(function (req, res, next) {
     next();
 });
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(expressWinston.logger({
@@ -92,7 +91,7 @@ app.use(session({
         httpOnly: true,
         secure: (app.get('env') === 'production'),
         domain: (app.get('env') === 'production') ? 'simeonevilardo.com' : 'localhost',
-        expires: utilityHelper.createExpDate(1, config.sizedate.week)
+        expires: utilityHelper.createExpDate(1, utilityHelper.sizedate.week)
     }
 }));
 app.use(passport.initialize());

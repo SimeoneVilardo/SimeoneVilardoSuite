@@ -17,7 +17,10 @@ var userSchema = new Schema({
     },
     validationToken: {
         token: {type: String, default: crypto.randomBytes(config.token.size).toString('hex')},
-        expirationDate: { type: Date, default: utilityHelper.createExpDate(1, config.sizedate.day) }
+        expirationDate: { type: Date, default: utilityHelper.createExpDate(1, utilityHelper.sizedate.day) }
+    },
+    facebook: {
+        id: {type: String}
     }
 });
 

@@ -85,17 +85,31 @@ module.exports = function (passport) {
         function (req, token, refreshToken, profile, done) {
             process.nextTick(function () {
                 var username = profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName);
-                if(req.session.social && req.session.social.facebook && req.session.social.facebook.usernameDuplicate && (req.session.social.facebook.originalUsername === username))
+                if (req.session.social && req.session.social.facebook && req.session.social.facebook.usernameDuplicate && (req.session.social.facebook.originalUsername === username))
                     username = req.session.social.facebook.altUsername;
                 var email = profile.email || profile.emails[0].value;
                 var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
-                        done(null, user);
-                        p.cancel();
+                        if (!user.facebook) {
+                            user.facebook = {
+                                id: profile.id,
+                                token: token,
+                                username: profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName)
+                            };
+                            return user.save();
+                        }
+                        else {
+                            done(null, user);
+                            p.cancel();
+                        }
                     }
                     else {
                         var newUser = new User();
-                        newUser.facebook = {id: profile.id, token: token};
+                        newUser.facebook = {
+                            id: profile.id,
+                            token: token,
+                            username: profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName)
+                        };
                         newUser.username = username;
                         newUser.email = profile.email || profile.emails[0].value;
                         newUser.validation = {validated: true, validationDate: Date.now()};
@@ -104,7 +118,7 @@ module.exports = function (passport) {
                 }).then(function (newUser) {
                     return done(null, newUser);
                 }).catch(function (err) {
-                    if(err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username'){
+                    if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
                         req.session.social = {facebook: {usernameDuplicate: true, originalUsername: username}};
                         err.redirect = {url: '/auth/username', data: {service: config.auth.facebook.service}};
                     }
@@ -123,17 +137,31 @@ module.exports = function (passport) {
         function (req, token, tokenSecret, profile, done) {
             process.nextTick(function () {
                 var username = profile.displayName || profile.username;
-                if(req.session.social && req.session.social.twitter && req.session.social.twitter.usernameDuplicate && (req.session.social.twitter.originalUsername === username))
+                if (req.session.social && req.session.social.twitter && req.session.social.twitter.usernameDuplicate && (req.session.social.twitter.originalUsername === username))
                     username = req.session.social.twitter.altUsername;
                 var email = profile.emails[0].value;
                 var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
-                        done(null, user);
-                        p.cancel();
+                        if (!user.twitter) {
+                            user.twitter = {
+                                id: profile.id,
+                                token: token,
+                                username: profile.displayName || profile.username
+                            };
+                            return user.save();
+                        }
+                        else {
+                            done(null, user);
+                            p.cancel();
+                        }
                     }
                     else {
                         var newUser = new User();
-                        newUser.twitter = {id: profile.id, token: token};
+                        newUser.twitter = {
+                            id: profile.id,
+                            token: token,
+                            username: profile.displayName || profile.username
+                        };
                         newUser.twitter.token = token;
                         newUser.username = username;
                         newUser.email = email;
@@ -143,7 +171,7 @@ module.exports = function (passport) {
                 }).then(function (newUser) {
                     return done(null, newUser);
                 }).catch(function (err) {
-                    if(err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username'){
+                    if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
                         req.session.social = {twitter: {usernameDuplicate: true, originalUsername: username}};
                         err.redirect = {url: '/auth/username', data: {service: config.auth.twitter.service}};
                     }
@@ -161,17 +189,23 @@ module.exports = function (passport) {
         function (req, token, refreshToken, profile, done) {
             process.nextTick(function () {
                 var username = profile.displayName;
-                if(req.session.social && req.session.social.google && req.session.social.google.usernameDuplicate && (req.session.social.google.originalUsername === username))
+                if (req.session.social && req.session.social.google && req.session.social.google.usernameDuplicate && (req.session.social.google.originalUsername === username))
                     username = req.session.social.google.altUsername;
                 var email = profile.emails[0].value;
                 var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
-                        done(null, user);
-                        p.cancel();
+                        if (!user.google) {
+                            user.google = {id: profile.id, token: token, username: profile.displayName};
+                            return user.save();
+                        }
+                        else {
+                            done(null, user);
+                            p.cancel();
+                        }
                     }
                     else {
                         var newUser = new User();
-                        newUser.google = {id: profile.id, token: token};
+                        newUser.google = {id: profile.id, token: token, username: profile.displayName};
                         newUser.username = username;
                         newUser.email = profile.email || profile.emails[0].value;
                         newUser.validation = {validated: true, validationDate: Date.now()};
@@ -180,7 +214,7 @@ module.exports = function (passport) {
                 }).then(function (newUser) {
                     return done(null, newUser);
                 }).catch(function (err) {
-                    if(err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username'){
+                    if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
                         req.session.social = {google: {usernameDuplicate: true, originalUsername: username}};
                         err.redirect = {url: '/auth/username', data: {service: config.auth.google.service}};
                     }

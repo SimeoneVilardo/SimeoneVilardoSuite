@@ -21,15 +21,18 @@ var userSchema = new Schema({
     },
     facebook: {
         id: {type: String},
-        token: {type: String}
+        token: {type: String},
+        username: {type: String}
     },
     twitter: {
         id: {type: String},
-        token: {type: String}
+        token: {type: String},
+        username: {type: String}
     },
     google: {
         id: {type: String},
-        token: {type: String}
+        token: {type: String},
+        username: {type: String}
     }
 });
 

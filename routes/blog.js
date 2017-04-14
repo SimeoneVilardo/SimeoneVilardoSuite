@@ -30,16 +30,14 @@ router.post('/upload', upload.single('file'), function (req, res, next) {
         if(!type.mime.startsWith('image'))
             throw errorHelper.serverError('Il file caricato non è un\'immagine');
         var currentDate = new Date();
-        var relPath = path.join('images', 'uploads', String(currentDate.getFullYear()), String(currentDate.getMonth() + 1), String(currentDate.getDate()));
-        var dirPath = path.join(__dirname, '..', 'public', relPath);
-        if(!fs.existsSync(dirPath))
-            mkdirp.sync(dirPath);
-        var relImagePath =  path.join('/', relPath, req.file.filename + '.' + type.ext);
-        var imagePath = path.join(dirPath, req.file.filename + '.' + type.ext);
-        return renamePromise(req.file.path, imagePath).return(relImagePath);
-    }).then(function (relImagePath) {
+        var dateDir = path.join(String(currentDate.getFullYear()), String(currentDate.getMonth() + 1), String(currentDate.getDate()));
+        var absPath = path.join(__dirname, '..', 'public', 'images', 'uploads', dateDir);
+        if(!fs.existsSync(absPath))
+            mkdirp.sync(absPath);
+        return renamePromise(req.file.path, path.join(absPath, req.file.filename + '.' + type.ext)).return(path.join('/', 'images', 'uploads', dateDir, req.file.filename + '.' + type.ext));
+    }).then(function (location) {
         res.json({
-            location: relImagePath
+            location: location
         });
     }).catch(function (err) {
         next(err);

@@ -51,7 +51,7 @@ dbHelper.updateUser = function (query, update, currentUser, options) {
                 validated: update.validation.validated,
                 validationDate: update.validation.validated ? Date.now() : undefined
             };
-        if (update.hasOwnProperty('password')) {
+        if (update.hasOwnProperty('password') && (!options || !options.login)) {
             if (utilityHelper.isEmpty(update.password) || update.password !== update.confirmPassword)
                 throw errorHelper.serverError('Le password non combaciano');
             else {

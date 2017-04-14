@@ -60,7 +60,9 @@ app.use(function (req, res, next) {
             ajax: req.ajax,
             url: req.originalUrl,
             back: req.back,
-            noUpdate: !!locals.noUpdate
+            noUpdate: !!locals.noUpdate,
+            currentUser: req.user,
+            roles: config.roles
         }) : {ajax: req.ajax, url: req.originalUrl, back: req.back, noUpdate: false};
         if (req.ajax)
             res.render(view, locals, callback);
@@ -116,10 +118,13 @@ if (app.get('env') === 'development') {
         err.status = err.status || 500;
         logHelper.getLogger().error(err);
         res.status(err.status);
-        res.renderHybrid((err.redirect && err.redirect.url) ? err.redirect.url : 'error', (err.redirect && err.redirect.data) ? err.redirect.data : {
-            errMessage: err.message,
-            error: err
-        });
+        if (err.redirect)
+            res.redirect(err.redirect);
+        else
+            res.renderHybrid('error', {
+                errMessage: err.message,
+                error: err
+            });
     });
 }
 
@@ -127,10 +132,13 @@ app.use(function (err, req, res, next) {
     err.status = err.status || 500;
     logHelper.getLogger().error(err);
     res.status(err.status);
-    res.renderHybrid((err.redirect && err.redirect.url) ? err.redirect.url : 'error', (err.redirect && err.redirect.data) ? err.redirect.data : {
-        errMessage: err.message,
-        error: {}
-    });
+    if (err.redirect)
+        res.redirect(err.redirect);
+    else
+        res.renderHybrid('error', {
+            errMessage: err.message,
+            error: {}
+        });
 });
 
 module.exports = app;

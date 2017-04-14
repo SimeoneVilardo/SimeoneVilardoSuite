@@ -1,8 +1,7 @@
 .container
     form(data-ajax='true', method='post', data-ajax-mode='replace', data-ajax-target='#body-content', action= post && post._id ? '/management/editpost' : '/blog/newpost')
         if post && post._id
-            input(type='hidden', name='postId', value=post._id)
-            input(type='hidden', name='validate' value=post.validation.validated ? 'true' : 'false', id='validate')
+            input(type='hidden', name='_id', value=post._id)
         .form-horizontal
             h4 Scrivi un articolo
             hr
@@ -14,28 +13,19 @@
                 label.control-label.col-md-2(for='subtitle', style='text-align: left;') Sotto-titolo
                 .col-md-10
                     input#subtitle.form-control.text-box.single-line(name='subtitle', type='text', value= post ? post.subtitle : '')
+            if currentUser.role >= roles.admin.code
+                .form-group
+                    label.control-label.col-md-2(for='validate', style='text-align: left;') Convalidato
+                    .col-md-10
+                        input#validated(type='checkbox', name='validate', data-toggle='toggle', data-onstyle='success', data-on="Si", data-offstyle='danger', data-off="No", checked= (post && post.validation.validated))
             .form-group
                 .col-md-12
-                    textarea.ckeditor(name='content')
+                    textarea.tinymce-editor(name='content')
             .form-group
-                if post && post._id && !post.validation.validated
-                    .col-md-offset-2.col-md-8
-                        button.btn.btn-primary.col-md-6(type='submit')
-                            i.fa.fa-floppy-o.fa-lg
-                            |  Salva
-                        button#btn-validate-post.btn.btn-primary.col-md-6(type='submit')
-                            i.fa.fa-send.fa-lg
-                            |  Pubblica
-                else
-                    .col-md-offset-5.col-md-2
-                        button.btn.btn-primary.btn-block(type='submit')
-                            i.fa.fa-send.fa-lg
-                            |  Invia
+                .col-md-offset-5.col-md-2
+                    button.btn.btn-primary.btn-block(type='submit')
+                        i.fa.fa-send.fa-lg
+                        |  Invia
 script.
     content = (!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content;
     updateBrowserData('Crea Post', '#{url}', #{ajax}, #{back}, #{noUpdate});
-    $(document).ready(function () {
-        $(document).on('click','#btn-validate-post', function () {
-            $('#validate').attr('value', true);
-        });
-    });

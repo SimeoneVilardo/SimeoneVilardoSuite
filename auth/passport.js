@@ -85,8 +85,8 @@ module.exports = function (passport) {
         function (req, token, refreshToken, profile, done) {
             process.nextTick(function () {
                 var username = profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName);
-                if (req.session.social && req.session.social.facebook && req.session.social.facebook.usernameDuplicate && (req.session.social.facebook.originalUsername === username))
-                    username = req.session.social.facebook.altUsername;
+                if (req.session.social && req.session.social.facebook && req.session.social.facebook.duplicate && (req.session.social.facebook.username === username))
+                    username = req.session.social.facebook.alias;
                 var email = profile.email || profile.emails[0].value;
                 var p = User.findOne({email: email}).exec().then(function (user) {
                     if (user) {
@@ -119,8 +119,8 @@ module.exports = function (passport) {
                     return done(null, newUser.toObject());
                 }).catch(function (err) {
                     if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
-                        req.session.social = {facebook: {usernameDuplicate: true, originalUsername: username}};
-                        err.redirect = {url: '/auth/username', data: {service: config.auth.facebook.service}};
+                        req.session.social = {facebook: {duplicate: true, username: username},  service: config.auth.facebook.service};
+                        err.redirect = '/auth/username';
                     }
                     return done(err);
                 });
@@ -137,8 +137,8 @@ module.exports = function (passport) {
         function (req, token, tokenSecret, profile, done) {
             process.nextTick(function () {
                 var username = profile.displayName || profile.username;
-                if (req.session.social && req.session.social.twitter && req.session.social.twitter.usernameDuplicate && (req.session.social.twitter.originalUsername === username))
-                    username = req.session.social.twitter.altUsername;
+                if (req.session.social && req.session.social.twitter && req.session.social.twitter.duplicate && (req.session.social.twitter.username === username))
+                    username = req.session.social.twitter.alias;
                 var email = profile.emails[0].value;
                 var p = User.findOne({email: email}).exec().then(function (user) {
                     if (user) {
@@ -172,8 +172,8 @@ module.exports = function (passport) {
                     return done(null, newUser.toObject());
                 }).catch(function (err) {
                     if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
-                        req.session.social = {twitter: {usernameDuplicate: true, originalUsername: username}};
-                        err.redirect = {url: '/auth/username', data: {service: config.auth.twitter.service}};
+                        req.session.social = {twitter: {duplicate: true, username: username},  service: config.auth.twitter.service};
+                        err.redirect = '/auth/username';
                     }
                     return done(err);
                 });
@@ -189,8 +189,8 @@ module.exports = function (passport) {
         function (req, token, refreshToken, profile, done) {
             process.nextTick(function () {
                 var username = profile.displayName;
-                if (req.session.social && req.session.social.google && req.session.social.google.usernameDuplicate && (req.session.social.google.originalUsername === username))
-                    username = req.session.social.google.altUsername;
+                if (req.session.social && req.session.social.google && req.session.social.google.duplicate && (req.session.social.google.username === username))
+                    username = req.session.social.google.alias;
                 var email = profile.emails[0].value;
                 var p = User.findOne({email: email}).exec().then(function (user) {
                     if (user) {
@@ -215,8 +215,8 @@ module.exports = function (passport) {
                     return done(null, newUser.toObject());
                 }).catch(function (err) {
                     if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
-                        req.session.social = {google: {usernameDuplicate: true, originalUsername: username}};
-                        err.redirect = {url: '/auth/username', data: {service: config.auth.google.service}};
+                        req.session.social = {google: {duplicate: true, username: username},  service: config.auth.google.service};
+                        err.redirect = '/auth/username';
                     }
                     return done(err);
                 });

@@ -18,16 +18,14 @@ router.get('/post', function (req, res, next) {
     });
 });
 
-router.post('/upload', upload.single('upload'), function (req, res, next) {
+router.post('/upload', upload.single('file'), function (req, res, next) {
     var ext = req.file.originalname.substr(req.file.originalname.lastIndexOf('.') + 1);
     fs.rename(req.file.path, req.file.path + '.' + ext, function (err) {
         if (err) {
             next(err);
         } else {
             res.json({
-                uploaded: 1,
-                fileName: req.file.filename,
-                url: '/images/uploads/' + req.file.filename + '.' + ext
+                location: '/images/uploads/' + req.file.filename + '.' + ext
             });
         }
     });
@@ -43,15 +41,10 @@ router.post('/newpost', function (req, res, next) {
             req.session.post = req.body;
             throw errorHelper.unauthorized('Utente non convalidato');
         }
-        dbHelper.createOrUpdatePost(req.user, req.body).then(function (result) {
-            if (result.ok === 1) {
-                delete req.session.post;
-                return dbHelper.findPost({_id: result.upserted[0]._id});
-            }
-            else
-                throw errorHelper.serverError('Errore nel salvataggio dell\'artcolo', 500);
-        }).then(function (post) {
-            res.renderHybrid('blog/post', {post: post});
+        var post = {title: req.body.title, subtitle: req.body.subtitle, content: req.body.content, validate: req.body.validate === 'on'};
+        dbHelper.createPost(req.user, post).then(function (post) {
+            delete req.session.post;
+            res.renderHybrid('blog/post', {post: post.toObject()});
         }).catch(function (err) {
             req.session.post = req.body;
             next(err);

@@ -10,8 +10,15 @@ securityHelper.isLogged = function(req, res, next) {
         res.redirect('/login');
 };
 
+securityHelper.mustChangeUsername = function(req, res, next) {
+    if(req.session.social && (req.session.social.facebook && req.session.social.facebook.duplicate) || (req.session.social.twitter && req.session.social.twitter.duplicate) || (req.session.social.google && req.session.social.google.duplicate))
+        next();
+    else
+        res.redirect('/');
+};
+
 securityHelper.isUsernameDuplicated = function(req, res, next) {
-    if(req.session.social && req.session.social[req.body.service] && req.session.social[req.body.service].usernameDuplicate)
+    if(req.session.social && req.session.social[req.session.social.service] && req.session.social[req.session.social.service].duplicate)
         next();
     else
         res.redirect('/');

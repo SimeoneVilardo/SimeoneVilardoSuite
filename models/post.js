@@ -14,6 +14,8 @@ var postSchema = new Schema({
     creationDate: { type: Date, default: Date.now },
     updateDate: {type: Date}
 });
+
+
 postSchema.plugin(mongoosePaginate);
 
 var post = mongoose.model('post', postSchema);

@@ -62,15 +62,45 @@ window.onpopstate = function (e) {
 };
 
 function updateBrowserData(title, url, ajax, back, noUpdate) {
-    var ckeditor = $('.ckeditor');
-    if(ckeditor && ckeditor.length > 0){
-        CKEDITOR.config.imageUploadUrl = '/blog/upload';
-        CKEDITOR.replace('content', {extraPlugins: 'uploadimage', filebrowserBrowseUrl: '',
-            filebrowserUploadUrl: '/blog/upload'});
-        CKEDITOR.instances['content'].setData(content);
-        /*        $('#btnSubmit').click(function () {
-         CKEDITOR.instances['content'].updateElement();
-         });*/
+    var tinymceEditor = $('.tinymce-editor');
+    if(tinymceEditor && tinymceEditor.length > 0){
+        tinymce.init({
+            height: 500,
+            language: 'it',
+            selector: '.tinymce-editor',
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table contextmenu paste code'
+            ],
+            //toolbar: 'undo redo | link image | code',
+            image_title: true,
+            automatic_uploads: true,
+            images_upload_url: '/blog/upload',
+            file_picker_types: 'image',
+            file_picker_callback: function(cb, value, meta) {
+                var input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function() {
+                    var file = this.files[0];
+                    var id = 'image_' + Date.now();
+                    var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                    var blobInfo = blobCache.create(id, file);
+                    blobCache.add(blobInfo);
+                    cb(blobInfo.blobUri(), { title: file.name });
+                };
+                input.click();
+            },
+            setup: function(editor) {
+                editor.on('init', function(e) {
+                    if(content){
+                        tinymce.activeEditor.setContent(content);
+                        tinymce.execCommand('mceRepaint');
+                    }
+                });
+            }
+        });
     }
 
     var selectPicker = $('.selectpicker');

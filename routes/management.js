@@ -45,11 +45,8 @@ router.post('/edituser', securityHelper.isLogged, securityHelper.setAdmin, secur
     var data = {username: req.body.username, email: req.body.email, role: parseInt(req.body.role), updateDate: Date.now(), validate: req.body.validated === 'on'};
     if(req.body.password && req.body.confirmPassword && req.body.password === req.body.confirmPassword)
         data.password = securityHelper.hashPassword(req.body.password);
-    dbHelper.updateUser({_id:req.query.id}, data, req.user).then(function (result) {
-        if(result.nModified === 1)
-            res.redirect('/management/users');
-        else
-            throw errorHelper.serverError('Errore nella modifica dell\'utente', 500);
+    dbHelper.updateUser({_id:req.query.id}, data, req.user).then(function (id) {
+        res.redirect('/management/users');
     }).catch(function (err) {
         next(err);
     });
@@ -66,13 +63,10 @@ router.post('/deletepost', securityHelper.isLogged, securityHelper.setAdmin, sec
 });
 
 router.post('/editpost', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    dbHelper.createOrUpdatePost(req.user, req.body).then(function (result) {
-        if (result.ok === 1) {
-            delete req.session.post;
-            return dbHelper.findPost({_id: result.upserted[0]._id});
-        }
-        else
-            throw errorHelper.serverError('Errore nel salvataggio dell\'artcolo', 500);
+    var post = {title: req.body.title, subtitle: req.body.subtitle, content: req.body.content, validate: req.body.validate === 'on'};
+    dbHelper.updatePost({_id: req.body._id}, post).then(function (id) {
+        delete req.session.post;
+        return dbHelper.findPost({_id:id});
     }).then(function (post) {
         res.renderHybrid('blog/post', {post: post});
     }).catch(function (err) {
@@ -82,22 +76,16 @@ router.post('/editpost', securityHelper.isLogged, securityHelper.setAdmin, secur
 });
 
 router.post('/banuser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    dbHelper.updateUser({_id:req.query.id}, {role: -1}, req.user).then(function (result) {
-        if(result.ok === 1)
-            res.redirect('/management/users');
-        else
-            throw errorHelper.serverError('Errore nella modifica dell\'utente', 500);
+    dbHelper.updateUser({_id:req.query.id}, {role: -1}, req.user).then(function (id) {
+        res.redirect('/management/users');
     }).catch(function (err) {
         next(err);
     });
 });
 
 router.post('/unbanuser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    dbHelper.updateUser({_id:req.query.id}, {role: 1}, req.user).then(function (result) {
-        if(result.ok === 1)
-            res.redirect('/management/users');
-        else
-            throw errorHelper.serverError('Errore nella modifica dell\'utente', 500);
+    dbHelper.updateUser({_id:req.query.id}, {role: 1}, req.user).then(function (id) {
+        res.redirect('/management/users');
     }).catch(function (err) {
         next(err);
     });
@@ -115,22 +103,16 @@ router.post('/deleteuser', securityHelper.isLogged, securityHelper.setAdmin, sec
 });
 
 router.get('/validate', securityHelper.isLogged,securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    dbHelper.updatePost({_id: req.query.id}, {'validation.validated': true, 'validation.validationDate': Date.now()}).then(function (result) {
-        if(result.nModified === 1)
-            res.redirect('/management/posts');
-        else
-            throw errorHelper.serverError('Errore nella convalida dell\'articolo', 500);
+    dbHelper.updatePost({_id: req.query.id}, {'validation.validated': true, 'validation.validationDate': Date.now()}).then(function (id) {
+        res.redirect('/management/posts');
     }).catch(function (err) {
         next(err);
     });
 });
 
 router.get('/disable', securityHelper.isLogged,securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    dbHelper.updatePost({_id: req.query.id}, {'validation.validated': false, $unset: {'validation.validationDate': 1 }}).then(function (result) {
-        if(result.nModified === 1)
-            res.redirect('/management/posts');
-        else
-            throw errorHelper.serverError('Errore nella disabilitazione dell\'articolo', 500);
+    dbHelper.updatePost({_id: req.query.id}, {'validation.validated': false, $unset: {'validation.validationDate': 1 }}).then(function (id) {
+        res.redirect('/management/posts');
     }).catch(function (err) {
         next(err);
     });

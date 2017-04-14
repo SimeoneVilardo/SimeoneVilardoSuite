@@ -7,15 +7,15 @@
           hr
           .col-md-8
             .form-group
-              label.control-label.col-md-2(for='Username') Username
-              .col-md-10
+              label.control-label.col-md-3(for='Username') Username
+              .col-md-9
                 input#Username.form-control.text-box.single-line(name='username', type='text')
             .form-group
-              label.control-label.col-md-2(for='Password') Password
-              .col-md-10
+              label.control-label.col-md-3(for='Password') Password
+              .col-md-9
                 input#Password.form-control.text-box.single-line.password(name='password', type='password')
             .form-group
-              .col-md-offset-2.col-md-10
+              .col-md-offset-3.col-md-9
                 input.btn.btn-default(type='submit', value='Accedi')
             include ../alerts.pug
             +alerts(passportMessage)

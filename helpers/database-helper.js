@@ -1,5 +1,6 @@
 var dbHelper = {};
 var config = require('../config.js');
+var errorHelper = require('./error-helper.js');
 var User = require('../models/user');
 var Post = require('../models/post');
 var securityHelper = require('./security-helper.js');
@@ -21,7 +22,13 @@ dbHelper.findPosts = function (query, fields) {
 };
 
 dbHelper.findPostsPaginated = function (query, page, fields, sort) {
-    return Post.paginate(query, {select: fields, limit: config.paginator.page_size, page: page, lean: true, sort:sort});
+    return Post.paginate(query, {
+        select: fields,
+        limit: config.paginator.page_size,
+        page: page,
+        lean: true,
+        sort: sort
+    });
 };
 
 dbHelper.deletePost = function (query) {
@@ -36,11 +43,17 @@ dbHelper.deleteUser = function (query, currentUser) {
 };
 
 dbHelper.updateUser = function (query, data, currentUser) {
-    return dbHelper.findUser(query, {role: 1,validation:1}).then(function (user) {
+    return dbHelper.findUser(query, {role: 1, validation: 1}).then(function (user) {
         securityHelper.hasPermissionToEdit(currentUser, user, data.role);
-        if(data.validate && user.validation.validated !== data.validate)
-            data.validation = {validated: data.validate, validationDate: Date.now()};
-        return User.update(query, data).exec();
+        if (data.hasOwnProperty('validate') && user.validation.validated !== data.validate){
+            data.validation = {validated: data.validate, validationDate: data.validate ? Date.now() : undefined};
+            delete data.validate;
+        }
+        return [user._id, User.update(query, data).exec()];
+    }).spread(function (id, result) {
+        if(result.ok === 1)
+            return id;
+        throw errorHelper.serverError('Errore nella modifica dell\'utente');
     });
 };
 
@@ -60,25 +73,33 @@ dbHelper.validateUser = function (token) {
 };
 
 dbHelper.updatePost = function (query, data) {
-    return Post.update(query, data).exec();
+    return dbHelper.findPost(query, {validation: 1}).then(function (post) {
+        if(data.hasOwnProperty('validate') && post.validation.validated !== data.validate){
+            data.validation = {validated: data.validate, validationDate: data.validate ? Date.now() : undefined};
+            delete data.validate;
+        }
+        return [post._id, Post.update(query, data).exec()];
+    }).spread(function (id, result) {
+        if(result.ok === 1)
+            return id;
+        throw errorHelper.serverError('Errore nella modifica dell\'articolo');
+    })
 };
 
 dbHelper.countPosts = function (query) {
     return Post.count(query).exec();
 };
 
-dbHelper.createOrUpdatePost = function (user, post) {
-    var newPost = new Post();
-    newPost.author = {_id: user._id, username: user.username};
-    newPost.title = post.title;
-    newPost.subtitle = post.subtitle;
-    newPost.content = post.content;
-    newPost.validation = {validated: ((user.role >= config.roles.admin.code) && (post.validate || !post._id))};
-    if (newPost.validation.validated)
-        newPost.validation.validationDate = Date.now();
-    if (post._id)
-        newPost._id = post._id;
-    return Post.update({_id: newPost._id}, newPost, {upsert: true, setDefaultsOnInsert: true}).exec();
+dbHelper.createPost = function (user, post) {
+    var validate = (user.role >= config.roles.admin.code) && (post.validate === true);
+    var newPost = new Post({
+        author: {_id: user._id, username: user.username},
+        title: post.title,
+        subtitle: post.subtitle,
+        content: post.content,
+        validation: {validated: validate, validationDate: validate ? Date.now() : undefined}
+    });
+    return newPost.save();
 };
 
 module.exports = dbHelper;

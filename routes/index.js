@@ -29,23 +29,20 @@ router.get('/contacts', function (req, res, next) {
     res.renderHybrid('index/contacts');
 });
 
-router.get('/login', function (req, res, next) {
+router.get('/login', securityHelper.isNotLogged, function (req, res, next) {
     res.renderHybrid('index/login', {passportMessage: req.flash('passportMessage')});
 });
 
-router.get('/signup', function (req, res, next) {
+router.get('/signup', securityHelper.isNotLogged, function (req, res, next) {
     res.renderHybrid('index/signup', {passportMessage: req.flash('passportMessage')});
 });
 
 router.get('/validate', function (req, res, next) {
-    dbHelper.validateUser(req.query.token).then(function (result) {
-        if (result.nModified === 1)
-            res.redirect('/login');
-        else
-            next(errorHelper.serverError('Errore nella validazione', 500));
+    dbHelper.validateUser(req.query.token).then(function (id) {
+        res.redirect('/login');
     }).catch(function (err) {
         next(err);
-    })
+    });
 });
 
 router.get('/logout', securityHelper.isLogged, function (req, res, next) {

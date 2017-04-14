@@ -79,7 +79,7 @@ module.exports = function (passport) {
     passport.use(new FacebookStrategy({
             clientID: config.auth.facebook.client_id,
             clientSecret: config.auth.facebook.client_secret,
-            callbackURL: config.auth.facebook.callback_URL,
+            callbackURL: config.auth.facebook.callback_url,
             profileFields: ['id', 'displayName', 'email'],
             passReqToCallback: true
         },
@@ -135,8 +135,8 @@ module.exports = function (passport) {
     passport.use(new TwitterStrategy({
             consumerKey: config.auth.twitter.client_id,
             consumerSecret: config.auth.twitter.client_secret,
-            callbackURL: config.auth.twitter.callback_URL,
-            userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
+            callbackURL: config.auth.twitter.callback_url,
+            userProfileURL: config.auth.twitter.user_profile_url,
             passReqToCallback: true
         },
         function (req, token, tokenSecret, profile, done) {
@@ -191,7 +191,7 @@ module.exports = function (passport) {
     passport.use(new GoogleStrategy({
             clientID: config.auth.google.client_id,
             clientSecret: config.auth.google.client_secret,
-            callbackURL: config.auth.google.callback_URL,
+            callbackURL: config.auth.google.callback_url,
             passReqToCallback: true
         },
         function (req, token, refreshToken, profile, done) {

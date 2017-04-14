@@ -3,10 +3,15 @@ var router = express.Router();
 var config = require('../config.js');
 var dbHelper = require('../helpers/database-helper.js');
 var errorHelper = require('../helpers/error-helper.js');
+var bluebird = require('bluebird');
 var fs = require('fs');
+var renamePromise = bluebird.promisify(fs.rename);
+var mkdirp = require('mkdirp');
 var path = require('path');
+const readChunk = require('read-chunk');
+const fileType = require('file-type');
 var multer = require('multer');
-var upload = multer({dest: path.join(__dirname, '..', 'public', 'images', 'uploads')});
+var upload = multer({dest: path.join(__dirname, '..', 'temp')});
 
 router.get('/post', function (req, res, next) {
     dbHelper.findPost({_id: req.query.id}).then(function (post) {
@@ -19,15 +24,25 @@ router.get('/post', function (req, res, next) {
 });
 
 router.post('/upload', upload.single('file'), function (req, res, next) {
-    var ext = req.file.originalname.substr(req.file.originalname.lastIndexOf('.') + 1);
-    fs.rename(req.file.path, req.file.path + '.' + ext, function (err) {
-        if (err) {
-            next(err);
-        } else {
-            res.json({
-                location: '/images/uploads/' + req.file.filename + '.' + ext
-            });
-        }
+    return bluebird.try(function() {
+        return fileType(readChunk.sync(req.file.path, 0, 4100));
+    }).then(function (type) {
+        if(!type.mime.startsWith('image'))
+            throw errorHelper.serverError('Il file caricato non è un\'immagine');
+        var currentDate = new Date();
+        var relPath = path.join('images', 'uploads', String(currentDate.getFullYear()), String(currentDate.getMonth() + 1), String(currentDate.getDate()));
+        var dirPath = path.join(__dirname, '..', 'public', relPath);
+        if(!fs.existsSync(dirPath))
+            mkdirp.sync(dirPath);
+        var relImagePath =  path.join('/', relPath, req.file.filename + '.' + type.ext);
+        var imagePath = path.join(dirPath, req.file.filename + '.' + type.ext);
+        return renamePromise(req.file.path, imagePath).return(relImagePath);
+    }).then(function (relImagePath) {
+        res.json({
+            location: relImagePath
+        });
+    }).catch(function (err) {
+        next(err);
     });
 });
 

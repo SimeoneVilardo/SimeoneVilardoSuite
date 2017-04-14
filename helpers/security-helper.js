@@ -11,6 +11,13 @@ securityHelper.isLogged = function(req, res, next) {
         res.redirect('/login');
 };
 
+securityHelper.isNotLogged = function(req, res, next) {
+    if (!req.isAuthenticated())
+        next();
+    else
+        res.redirect('/');
+};
+
 securityHelper.mustChangeUsername = function(req, res, next) {
     if(req.session.social && (req.session.social.facebook && req.session.social.facebook.duplicate) || (req.session.social.twitter && req.session.social.twitter.duplicate) || (req.session.social.google && req.session.social.google.duplicate))
         next();

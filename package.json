@@ -22,8 +22,10 @@
     "express-session": "^1.15.2",
     "express-winston": "^2.3.0",
     "fb": "^1.1.1",
+    "file-type": "^4.1.0",
     "helmet": "^3.5.0",
     "less": "^2.7.2",
+    "mkdirp": "^0.5.1",
     "mongoose": "^4.9.3",
     "mongoose-paginate": "^5.0.3",
     "morgan": "^1.8.1",
@@ -35,6 +37,7 @@
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.4",
     "pug": "^2.0.0-beta11",
+    "read-chunk": "^2.0.0",
     "uglify-js": "^2.8.22",
     "uglifycss": "0.0.25",
     "winston": "^2.3.1"

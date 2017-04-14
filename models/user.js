@@ -1,7 +1,6 @@
 ﻿var mongoose = require('mongoose');
 var config = require('../config.js');
 var utilityHelper = require('../helpers/utility-helper.js');
-var crypto = require('crypto');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
@@ -34,12 +33,6 @@ var userSchema = new Schema({
         token: {type: String},
         username: {type: String}
     }
-});
-
-userSchema.pre('save', function(next) {
-    if(this.validation.validated === false)
-        this.validationToken = {token: crypto.randomBytes(config.token.size).toString('hex'), expirationDate: utilityHelper.createExpDate(1, utilityHelper.sizedate.day)};
-    next();
 });
 
 var user = mongoose.model('user', userSchema);

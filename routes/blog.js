@@ -36,24 +36,14 @@ router.get('/newpost', function (req, res, next) {
 });
 
 router.post('/newpost', function (req, res, next) {
-    if (req.isAuthenticated()) {
-        if(!req.user.validation.validated){
-            req.session.post = req.body;
-            throw errorHelper.unauthorized('Utente non convalidato');
-        }
-        var post = {title: req.body.title, subtitle: req.body.subtitle, content: req.body.content, validate: req.body.validate === 'on'};
-        dbHelper.createPost(req.user, post).then(function (post) {
-            delete req.session.post;
-            res.renderHybrid('blog/post', {post: post.toObject()});
-        }).catch(function (err) {
-            req.session.post = req.body;
-            next(err);
-        });
-    }
-    else {
+    var post = {title: req.body.title, subtitle: req.body.subtitle, content: req.body.content, validation: {validated: req.body.validate === 'on'}};
+    dbHelper.createPost(req.user, post).then(function (post) {
+        delete req.session.post;
+        res.renderHybrid('blog/post', {post: post.toObject()});
+    }).catch(function (err) {
         req.session.post = req.body;
-        res.redirect('/login');
-    }
+        next(err);
+    });
 });
 
 module.exports = router;

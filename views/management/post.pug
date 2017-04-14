@@ -13,7 +13,7 @@
                 label.control-label.col-md-2(for='subtitle', style='text-align: left;') Sotto-titolo
                 .col-md-10
                     input#subtitle.form-control.text-box.single-line(name='subtitle', type='text', value= post ? post.subtitle : '')
-            if currentUser.role >= roles.admin.code
+            if currentUser && currentUser.role >= roles.admin.code
                 .form-group
                     label.control-label.col-md-2(for='validate', style='text-align: left;') Convalidato
                     .col-md-10

@@ -3,7 +3,6 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var TwitterStrategy = require('passport-twitter').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var securityHelper = require('../helpers/security-helper.js');
-var User = require('../models/user');
 var dbHelper = require('../helpers/database-helper.js');
 var mailHelper = require('../helpers/mail-helper.js');
 var utilityHelper = require('../helpers/utility-helper.js');
@@ -34,25 +33,27 @@ module.exports = function (passport) {
                     p.cancel();
                     return;
                 }
-                if (password && (password !== req.body.confirmPassword)) {
+                if (utilityHelper.isEmpty(password) || (password !== req.body.confirmPassword)) {
                     done(null, false, req.flash('passportMessage', 'Le password non combaciano'));
                     p.cancel();
                     return;
                 }
-                var newUser = new User();
-                newUser.username = username;
-                newUser.email = req.body.email;
-                newUser.password = securityHelper.hashPassword(password);
-                return [newUser.save(), password];
-            }).spread(function (newUser, password) {
+                var newUser = {
+                    username: username,
+                    email: req.body.email,
+                    password: password,
+                    confirmPassword: req.body.confirmPassword
+                };
+                return dbHelper.createUser(newUser);
+            }).then(function (newUser) {
                 if (newUser)
-                    return [newUser, mailHelper.sendSignUp(newUser.username, password, newUser.email, newUser.validationToken.token)];
-                done(null, false, req.flash('passportMessage', 'Errore durante la registrazione'));
+                    return [newUser, mailHelper.sendSignUp(newUser.username, newUser.email, newUser.validationToken.token)];
+                done(null, false, req.flash('passportMessage', 'Errore sconosciuto durante la registrazione'));
                 p.cancel();
             }).spread(function (newUser, mailResult) {
                 if (mailResult && !mailResult.response.startsWith('250'))
                     return done(null, false, req.flash('passportMessage', 'Errore nell\'invio della mail'));
-                return done(null, newUser.toObject());
+                return done(null, newUser);
             }).catch(function (err) {
                 return done(err);
             })
@@ -88,38 +89,44 @@ module.exports = function (passport) {
                 if (req.session.social && req.session.social.facebook && req.session.social.facebook.duplicate && (req.session.social.facebook.username === username))
                     username = req.session.social.facebook.alias;
                 var email = profile.email || profile.emails[0].value;
-                var p = User.findOne({email: email}).exec().then(function (user) {
+                var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
-                        if (!((user.toObject()).facebook)) {
+                        var userId = user._id;
+                        delete user._id;
+                        if (!user.facebook) {
                             user.facebook = {
                                 id: profile.id,
                                 token: token,
                                 username: profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName)
                             };
-                            return user.save();
+                            return dbHelper.updateUser({_id: userId}, user, null, {login: true});
                         }
                         else {
-                            done(null, user.toObject());
+                            done(null, user);
                             p.cancel();
                         }
                     }
                     else {
-                        var newUser = new User();
-                        newUser.facebook = {
-                            id: profile.id,
-                            token: token,
-                            username: profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName)
+                        var newUser = {
+                            username: username,
+                            email: profile.email || profile.emails[0].value,
+                            validation: {validated: true, validationDate: Date.now()},
+                            facebook: {
+                                id: profile.id,
+                                token: token,
+                                username: profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName)
+                            }
                         };
-                        newUser.username = username;
-                        newUser.email = profile.email || profile.emails[0].value;
-                        newUser.validation = {validated: true, validationDate: Date.now()};
-                        return newUser.save();
+                        return dbHelper.createUser(newUser, {social: true});
                     }
                 }).then(function (newUser) {
-                    return done(null, newUser.toObject());
+                    return done(null, newUser);
                 }).catch(function (err) {
                     if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
-                        req.session.social = {facebook: {duplicate: true, username: username},  service: config.auth.facebook.service};
+                        req.session.social = {
+                            facebook: {duplicate: true, username: username},
+                            service: config.auth.facebook.service
+                        };
                         err.redirect = '/auth/username';
                     }
                     return done(err);
@@ -140,39 +147,44 @@ module.exports = function (passport) {
                 if (req.session.social && req.session.social.twitter && req.session.social.twitter.duplicate && (req.session.social.twitter.username === username))
                     username = req.session.social.twitter.alias;
                 var email = profile.emails[0].value;
-                var p = User.findOne({email: email}).exec().then(function (user) {
+                var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
-                        if (!((user.toObject()).twitter)) {
+                        var userId = user._id;
+                        delete user._id;
+                        if (!user.twitter) {
                             user.twitter = {
                                 id: profile.id,
                                 token: token,
                                 username: profile.displayName || profile.username
                             };
-                            return user.save();
+                            return dbHelper.updateUser({_id: userId}, user, null, {login: true});
                         }
                         else {
-                            done(null, user.toObject());
+                            done(null, user);
                             p.cancel();
                         }
                     }
                     else {
-                        var newUser = new User();
-                        newUser.twitter = {
-                            id: profile.id,
-                            token: token,
-                            username: profile.displayName || profile.username
+                        var newUser = {
+                            username: username,
+                            email: email,
+                            validation: {validated: true, validationDate: Date.now()},
+                            twitter: {
+                                id: profile.id,
+                                token: token,
+                                username: profile.displayName || profile.username
+                            }
                         };
-                        newUser.twitter.token = token;
-                        newUser.username = username;
-                        newUser.email = email;
-                        newUser.validation = {validated: true, validationDate: Date.now()};
-                        return newUser.save();
+                        return dbHelper.createUser(newUser, {social: true});
                     }
                 }).then(function (newUser) {
-                    return done(null, newUser.toObject());
+                    return done(null, newUser);
                 }).catch(function (err) {
                     if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
-                        req.session.social = {twitter: {duplicate: true, username: username},  service: config.auth.twitter.service};
+                        req.session.social = {
+                            twitter: {duplicate: true, username: username},
+                            service: config.auth.twitter.service
+                        };
                         err.redirect = '/auth/username';
                     }
                     return done(err);
@@ -192,35 +204,40 @@ module.exports = function (passport) {
                 if (req.session.social && req.session.social.google && req.session.social.google.duplicate && (req.session.social.google.username === username))
                     username = req.session.social.google.alias;
                 var email = profile.emails[0].value;
-                var p = User.findOne({email: email}).exec().then(function (user) {
+                var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
-                        if (!((user.toObject()).google)) {
+                        var userId = user._id;
+                        delete user._id;
+                        if (!user.google) {
                             user.google = {id: profile.id, token: token, username: profile.displayName};
-                            return user.save();
+                            return dbHelper.updateUser({_id: userId}, user, null, {login: true});
                         }
                         else {
-                            done(null, user.toObject());
+                            done(null, user);
                             p.cancel();
                         }
                     }
                     else {
-                        var newUser = new User();
-                        newUser.google = {id: profile.id, token: token, username: profile.displayName};
-                        newUser.username = username;
-                        newUser.email = profile.email || profile.emails[0].value;
-                        newUser.validation = {validated: true, validationDate: Date.now()};
-                        return newUser.save();
+                        var newUser = {
+                            username: username,
+                            email: profile.email || profile.emails[0].value,
+                            validation: {validated: true, validationDate: Date.now()},
+                            google: {id: profile.id, token: token, username: profile.displayName}
+                        };
+                        return dbHelper.createUser(newUser, {social: true});
                     }
                 }).then(function (newUser) {
-                    return done(null, newUser.toObject());
+                    return done(null, newUser);
                 }).catch(function (err) {
                     if (err.code === 11000 && utilityHelper.extractDuplicateField(err) === 'username') {
-                        req.session.social = {google: {duplicate: true, username: username},  service: config.auth.google.service};
+                        req.session.social = {
+                            google: {duplicate: true, username: username},
+                            service: config.auth.google.service
+                        };
                         err.redirect = '/auth/username';
                     }
                     return done(err);
                 });
-
             });
         }));
 };

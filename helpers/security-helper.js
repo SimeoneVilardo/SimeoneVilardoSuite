@@ -1,5 +1,6 @@
 var securityHelper = {};
 var bcrypt = require('bcrypt-nodejs');
+var crypto = require('crypto');
 var errorHelper = require('./error-helper.js');
 var config = require('../config');
 
@@ -56,20 +57,24 @@ securityHelper.checkPassword = function (password, hashedPassword) {
     return bcrypt.compareSync(password, hashedPassword);
 };
 
+securityHelper.generateToken = function () {
+    return crypto.randomBytes(config.token.size).toString('hex');
+};
+
 securityHelper.hasPermissionToEdit = function (currentUser, targetUser, newRole) {
     if(targetUser.role === config.roles.superadmin.code)
-        throw errorHelper.unauthorized('Impossibile modificare un superadmin');
+        return errorHelper.unauthorized('Impossibile modificare un superadmin');
     if(newRole > currentUser.role)
-        throw errorHelper.unauthorized('Impossibile assegnare ad un utente un ruolo superiore al proprio');
+        return errorHelper.unauthorized('Impossibile assegnare ad un utente un ruolo superiore al proprio');
     if(targetUser.role > currentUser.role)
-        throw errorHelper.unauthorized('Impossibile modificare un utente di ruolo superiore al proprio');
+        return errorHelper.unauthorized('Impossibile modificare un utente di ruolo superiore al proprio');
 };
 
 securityHelper.hasPermissionToDelete = function (currentUser, targetUser) {
     if(targetUser.role === config.roles.superadmin.code)
-        throw errorHelper.unauthorized('Impossibile eliminare un superadmin');
+        return errorHelper.unauthorized('Impossibile eliminare un superadmin');
     if(targetUser.role > currentUser.role)
-        throw errorHelper.unauthorized('Impossibile eliminare un utente di ruolo superiore al proprio');
+        return errorHelper.unauthorized('Impossibile eliminare un utente di ruolo superiore al proprio');
 };
 
 module.exports = securityHelper;

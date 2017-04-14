@@ -1,23 +1,25 @@
-var content = null;
+var tinymceOptions = {};
+var bootpagOptions = {};
 
 jQuery(document).ready(function ($) {
     var MQL = 1170;
     if ($(window).width() > MQL) {
-        var headerHeight = $('.navbar-custom').height();
+        var navbarCustom =  $('.navbar-custom');
+        var headerHeight = navbarCustom.height();
         $(window).on('scroll', {
-            previousTop: 0
-        },
+                previousTop: 0
+            },
             function () {
                 var currentTop = $(window).scrollTop();
                 if (currentTop < this.previousTop) {
-                    if (currentTop > 0 && $('.navbar-custom').hasClass('is-fixed')) {
-                        $('.navbar-custom').addClass('is-visible');
+                    if (currentTop > 0 && navbarCustom.hasClass('is-fixed')) {
+                        navbarCustom.addClass('is-visible');
                     } else {
-                        $('.navbar-custom').removeClass('is-visible is-fixed');
+                        navbarCustom.removeClass('is-visible is-fixed');
                     }
                 } else if (currentTop > this.previousTop) {
-                    $('.navbar-custom').removeClass('is-visible');
-                    if (currentTop > headerHeight && !$('.navbar-custom').hasClass('is-fixed')) $('.navbar-custom').addClass('is-fixed');
+                    navbarCustom.removeClass('is-visible');
+                    if (currentTop > headerHeight && !navbarCustom.hasClass('is-fixed')) navbarCustom.addClass('is-fixed');
                 }
                 this.previousTop = currentTop;
             });
@@ -29,7 +31,7 @@ jQuery(document).ready(function ($) {
 
     var options = {
         classname: 'loading-bar',
-        id: 'loading-bar',
+        id: 'loading-bar'
     };
     var nanobar = new Nanobar(options);
 
@@ -40,7 +42,6 @@ jQuery(document).ready(function ($) {
                 var percentage = Math.floor(e.loaded / e.total * 100);
                 nanobar.go(percentage);
             },
-
             onload: function (e) {
                 console.log('onload', e);
             }
@@ -54,7 +55,7 @@ window.onpopstate = function (e) {
     $.ajax({
         url: e.state,
         method: 'GET',
-        headers: { 'Back-Req': 'true' },
+        headers: {'back-req': 'true'},
         success: function (data) {
             $('#body-content').html(data);
         }
@@ -63,7 +64,7 @@ window.onpopstate = function (e) {
 
 function updateBrowserData(title, url, ajax, back, noUpdate) {
     var tinymceEditor = $('.tinymce-editor');
-    if(tinymceEditor && tinymceEditor.length > 0){
+    if (tinymceEditor && tinymceEditor.length > 0) {
         tinymce.init({
             height: 500,
             language: 'it',
@@ -78,24 +79,24 @@ function updateBrowserData(title, url, ajax, back, noUpdate) {
             automatic_uploads: true,
             images_upload_url: '/blog/upload',
             file_picker_types: 'image',
-            file_picker_callback: function(cb, value, meta) {
+            file_picker_callback: function (cb, value, meta) {
                 var input = document.createElement('input');
                 input.setAttribute('type', 'file');
                 input.setAttribute('accept', 'image/*');
-                input.onchange = function() {
+                input.onchange = function () {
                     var file = this.files[0];
                     var id = 'image_' + Date.now();
                     var blobCache = tinymce.activeEditor.editorUpload.blobCache;
                     var blobInfo = blobCache.create(id, file);
                     blobCache.add(blobInfo);
-                    cb(blobInfo.blobUri(), { title: file.name });
+                    cb(blobInfo.blobUri(), {title: file.name});
                 };
                 input.click();
             },
-            setup: function(editor) {
-                editor.on('init', function(e) {
-                    if(content){
-                        tinymce.activeEditor.setContent(content);
+            setup: function (editor) {
+                editor.on('init', function (e) {
+                    if (tinymceOptions.content) {
+                        tinymce.activeEditor.setContent(tinymceOptions.content);
                         tinymce.execCommand('mceRepaint');
                     }
                 });
@@ -104,34 +105,51 @@ function updateBrowserData(title, url, ajax, back, noUpdate) {
     }
 
     var selectPicker = $('.selectpicker');
-    if(selectPicker.length > 0)
+    if (selectPicker.length > 0)
         selectPicker.selectpicker();
 
     var checkbox = $("input[type='checkbox']");
-    if(checkbox.length > 0)
+    if (checkbox.length > 0)
         checkbox.bootstrapToggle();
 
-    if(!noUpdate){
+    var bootpag = $('.paginator');
+    if (bootpag.length > 0) {
+        bootpag.bootpag({
+            total: bootpagOptions.total,
+            page: bootpagOptions.page,
+            maxVisible: 5,
+            firstLastUse: true,
+            first: '←',
+            last: '→',
+            leaps: true
+        }).on("page", function (event, num) {
+            ajaxRequest('GET', 'replace', '#body-content', '/?page=' + num, null, function () {
+                window.scrollTo(0, 0)
+            });
+        });
+    }
+
+    if (!noUpdate) {
         if (!back && ajax)
             window.history.pushState(url, url, url);
         document.title = title + ' - Simeone Vilardo';
     }
 }
-
-    window.addEventListener("load", function(){
-        window.cookieconsent.initialise({
-            "palette": {
-                "popup": {
-                    "background": "#252e39"
-                },
-                "button": {
-                    "background": "#14a7d0"
-                }
+window.addEventListener("load", function () {
+    window.cookieconsent.initialise({
+        "palette": {
+            "popup": {
+                "background": "#252e39"
             },
-            "content": {
-                "message": "Questo sito utilizza cookie tecnici e di profilazione per assicurarti una migliore esperienza.",
-                "dismiss": "Capito!",
-                "link": "Ulteriori informazioni."
+            "button": {
+                "background": "#14a7d0"
             }
-        })});
+        },
+        "content": {
+            "message": "Questo sito utilizza cookie tecnici e di profilazione per assicurarti una migliore esperienza.",
+            "dismiss": "Capito!",
+            "link": "Ulteriori informazioni."
+        }
+    })
+});
 

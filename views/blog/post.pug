@@ -6,4 +6,3 @@
             div !{post.content}
 script.
     updateBrowserData('#{post.title}', '#{url}', #{ajax}, #{back}, #{noUpdate});
-    content = (!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content;

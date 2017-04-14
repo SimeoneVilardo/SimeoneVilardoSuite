@@ -27,5 +27,5 @@
                         i.fa.fa-send.fa-lg
                         |  Invia
 script.
-    content = (!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content;
+    tinymceOptions.content = (!{JSON.stringify(post || {}).replace(/<\//g, '<\\/')}).content;
     updateBrowserData('Crea Post', '#{url}', #{ajax}, #{back}, #{noUpdate});

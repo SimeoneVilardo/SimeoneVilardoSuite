@@ -11,19 +11,8 @@
               | Scritto da&nbsp;
               label #{post.author.username}
               |  in data #{post.creationDate.toLocaleString('it-IT', { hour12: false })}
-        #paginator
+        .paginator
 script.
-  updateBrowserData('Home', '#{url}', #{ajax}, #{back}, #{noUpdate});
-  $(document).ready(function () {
-      $('#paginator').bootpag({
-          total: #{totalPages},
-          page: #{currentPage},
-          maxVisible: 5,
-          firstLastUse: true,
-          first: '←',
-          last: '→',
-          leaps: true
-      }).on("page", function (event, num) {
-          ajaxRequest('GET', 'replace', '#body-content', '/?page=' + num, null, function(){window.scrollTo(0,0)});
-      });
-  });
+    bootpagOptions.total = #{totalPages};
+    bootpagOptions.page = #{currentPage};
+    updateBrowserData('Home', '#{url}', #{ajax}, #{back}, #{noUpdate});

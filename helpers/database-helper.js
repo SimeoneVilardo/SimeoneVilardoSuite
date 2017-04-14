@@ -4,6 +4,7 @@ var errorHelper = require('./error-helper.js');
 var User = require('../models/user');
 var Post = require('../models/post');
 var securityHelper = require('./security-helper.js');
+var utilityHelper = require('./utility-helper.js');
 
 dbHelper.findUser = function (query, fields) {
     return User.findOne(query).select(fields).lean().exec();
@@ -42,14 +43,21 @@ dbHelper.deleteUser = function (query, currentUser) {
     });
 };
 
-dbHelper.updateUser = function (query, data, currentUser) {
+dbHelper.updateUser = function (query, update, currentUser) {
     return dbHelper.findUser(query, {role: 1, validation: 1}).then(function (user) {
-        securityHelper.hasPermissionToEdit(currentUser, user, data.role);
-        if (data.hasOwnProperty('validate') && user.validation.validated !== data.validate){
-            data.validation = {validated: data.validate, validationDate: data.validate ? Date.now() : undefined};
-            delete data.validate;
+        securityHelper.hasPermissionToEdit(currentUser, user, update.role);
+        if(update.hasOwnProperty('validation') && update.validation.hasOwnProperty('validated') && user.validation.validated !== update.validation.validated)
+            update.validation = {validated: update.validation.validated, validationDate: update.validation.validated ? Date.now() : undefined};
+        if(update.hasOwnProperty('password')){
+            if(utilityHelper.isEmpty(update.password) || update.password !== update.confirmPassword)
+                throw errorHelper.serverError('Le password non combaciano');
+            else
+            {
+                update.password = securityHelper.hashPassword(update.password);
+                delete update.confirmPassword;
+            }
         }
-        return [user._id, User.update(query, data).exec()];
+        return [user._id, User.update(query, update).exec()];
     }).spread(function (id, result) {
         if(result.ok === 1)
             return id;
@@ -72,13 +80,11 @@ dbHelper.validateUser = function (token) {
         });
 };
 
-dbHelper.updatePost = function (query, data) {
+dbHelper.updatePost = function (query, update) {
     return dbHelper.findPost(query, {validation: 1}).then(function (post) {
-        if(data.hasOwnProperty('validate') && post.validation.validated !== data.validate){
-            data.validation = {validated: data.validate, validationDate: data.validate ? Date.now() : undefined};
-            delete data.validate;
-        }
-        return [post._id, Post.update(query, data).exec()];
+        if(update.hasOwnProperty('validation') && update.validation.hasOwnProperty('validated') && post.validation.validated !== update.validation.validated)
+            update.validation = {validated: update.validation.validated, validationDate: update.validation.validated ? Date.now() : undefined};
+        return [post._id, Post.update(query, update).exec()];
     }).spread(function (id, result) {
         if(result.ok === 1)
             return id;

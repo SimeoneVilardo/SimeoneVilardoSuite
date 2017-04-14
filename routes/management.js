@@ -3,6 +3,7 @@ var router = express.Router();
 var securityHelper = require('../helpers/security-helper.js');
 var dbHelper = require('../helpers/database-helper.js');
 var errorHelper = require('../helpers/error-helper.js');
+var utilityHelper = require('../helpers/utility-helper.js');
 var config = require('../config.js');
 
 router.get('/posts', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
@@ -42,9 +43,11 @@ router.get('/edituser', securityHelper.isLogged, securityHelper.setAdmin, securi
 });
 
 router.post('/edituser', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    var data = {username: req.body.username, email: req.body.email, role: parseInt(req.body.role), updateDate: Date.now(), validate: req.body.validated === 'on'};
-    if(req.body.password && req.body.confirmPassword && req.body.password === req.body.confirmPassword)
-        data.password = securityHelper.hashPassword(req.body.password);
+    var data = {username: req.body.username, email: req.body.email, role: parseInt(req.body.role), updateDate: Date.now(), validation: {validated: req.body.validated === 'on'}};
+    if(req.body.hasOwnProperty('password') && !utilityHelper.isEmpty(req.body.password)){
+        data.password = req.body.password;
+        data.confirmPassword = req.body.confirmPassword;
+    }
     dbHelper.updateUser({_id:req.query.id}, data, req.user).then(function (id) {
         res.redirect('/management/users');
     }).catch(function (err) {
@@ -63,7 +66,7 @@ router.post('/deletepost', securityHelper.isLogged, securityHelper.setAdmin, sec
 });
 
 router.post('/editpost', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
-    var post = {title: req.body.title, subtitle: req.body.subtitle, content: req.body.content, validate: req.body.validate === 'on'};
+    var post = {title: req.body.title, subtitle: req.body.subtitle, content: req.body.content, validation: {validated: req.body.validate === 'on'}};
     dbHelper.updatePost({_id: req.body._id}, post).then(function (id) {
         delete req.session.post;
         return dbHelper.findPost({_id:id});

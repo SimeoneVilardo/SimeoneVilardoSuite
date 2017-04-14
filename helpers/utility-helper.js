@@ -42,6 +42,10 @@ utilityHelper.extend = function () {
     return extended;
 };
 
+utilityHelper.isEmpty = function (str) {
+    return (str.length === 0 || !str.trim());
+};
+
 utilityHelper.createExpDate = function (num, size) {
     return new Date(Date.now() + num * size);
 };

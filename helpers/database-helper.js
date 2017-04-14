@@ -54,6 +54,8 @@ dbHelper.updateUser = function (query, update, currentUser, options) {
                 delete update.confirmPassword;
             }
         }
+        update.hasOwnProperty('_id')
+            delete update._id;
         return [user._id, User.update(query, update).exec()];
     }).spread(function (id, result) {
         if(result.ok === 1)

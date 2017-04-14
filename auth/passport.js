@@ -91,15 +91,13 @@ module.exports = function (passport) {
                 var email = profile.email || profile.emails[0].value;
                 var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
-                        var userId = user._id;
-                        delete user._id;
                         if (!user.facebook) {
                             user.facebook = {
                                 id: profile.id,
                                 token: token,
                                 username: profile.displayName || profile.username || (profile.name.givenName + ' ' + profile.name.familyName)
                             };
-                            return dbHelper.updateUser({_id: userId}, user, null, {login: true});
+                            return dbHelper.updateUser({_id: user._id}, user, null, {login: true});
                         }
                         else {
                             done(null, user);
@@ -149,15 +147,13 @@ module.exports = function (passport) {
                 var email = profile.emails[0].value;
                 var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
-                        var userId = user._id;
-                        delete user._id;
                         if (!user.twitter) {
                             user.twitter = {
                                 id: profile.id,
                                 token: token,
                                 username: profile.displayName || profile.username
                             };
-                            return dbHelper.updateUser({_id: userId}, user, null, {login: true});
+                            return dbHelper.updateUser({_id: user._id}, user, null, {login: true});
                         }
                         else {
                             done(null, user);
@@ -206,11 +202,9 @@ module.exports = function (passport) {
                 var email = profile.emails[0].value;
                 var p = dbHelper.findUser({email: email}).then(function (user) {
                     if (user) {
-                        var userId = user._id;
-                        delete user._id;
                         if (!user.google) {
                             user.google = {id: profile.id, token: token, username: profile.displayName};
-                            return dbHelper.updateUser({_id: userId}, user, null, {login: true});
+                            return dbHelper.updateUser({_id:  user._id}, user, null, {login: true});
                         }
                         else {
                             done(null, user);

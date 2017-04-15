@@ -1,0 +1,63 @@
+.container
+    h4 Profilo
+    div(style='margin-top:20px;')
+        ul.nav.nav-tabs(role='tablist')
+            li.active(role='presentation')
+                a(href='#username-tab', aria-controls='username-tab', role='tab', data-toggle='tab') Username
+            li(role='presentation')
+                a(href='#email-tab', aria-controls='email-tab', role='tab', data-toggle='tab') Email
+            li(role='presentation')
+                a(href='#password-tab', aria-controls='password-tab', role='tab', data-toggle='tab') Password
+            li(role='presentation')
+                a(href='#settings-tab', aria-controls='settings-tab', role='tab', data-toggle='tab') Impostazioni
+        .tab-content
+            #username-tab.tab-pane.active(role='tabpanel')
+                form(action='/me/change-username', method='post', style='margin-top:20px;')
+                    .form-horizontal
+                        .form-group
+                            label.control-label.col-md-offset-2.col-md-10(style='text-align: left;') Modifica il tuo username
+                        .form-group
+                            label.control-label.col-md-2(for='Username') Username
+                            .col-md-5
+                                input#Username.form-control.text-box.single-line(name='username', type='text')
+                        .form-group
+                            .col-md-offset-2.col-md-10
+                                input.btn.btn-default(type='submit', value='Conferma')
+            #email-tab.tab-pane(role='tabpanel')
+                form(action='/me/change-email', method='post', style='margin-top:20px;')
+                    .form-horizontal
+                        .form-group
+                            label.control-label.col-md-offset-2.col-md-10(style='text-align: left;') Modifica il tuo indirizzo email
+                        .form-group
+                            label.control-label.col-md-2(for='Email') Email
+                            .col-md-5
+                                input#Email.form-control.text-box.single-line(name='email', type='text')
+                        .form-group
+                            .col-md-offset-2.col-md-10
+                                input.btn.btn-default(type='submit', value='Conferma')
+            #password-tab.tab-pane(role='tabpanel')
+                form(action='/me/change-password', method='post', style='margin-top:20px;')
+                    .form-horizontal
+                        .form-group
+                            label.control-label.col-md-offset-2.col-md-10(style='text-align: left;') Modifica la tua password
+                        .form-group
+                            label.control-label.col-md-2(for='password') Password
+                            .col-md-5
+                                input#password.form-control.text-box.single-line(name='password', type='password')
+                        .form-group
+                            label.control-label.col-md-2(for='confirmPassword') Conferma password
+                            .col-md-5
+                                input#confirmPassword.form-control.text-box.single-line(name='confirmPassword', type='password')
+                        .form-group
+                            .col-md-offset-2.col-md-10
+                                input.btn.btn-default(type='submit', value='Conferma')
+            #settings-tab.tab-pane(role='tabpanel')
+                .form-horizontal(style='margin-top:20px;')
+                    .form-group
+                        label.control-label.col-md-2(for='Email') Elimina il tuo account
+                        .col-md-5
+                            a.btn.btn-danger(href='/me/delete-account')
+                                i.fa.fa-trash-o.fa-lg
+                                |  Elimina
+    script.
+        updateBrowserData('Profilo', '#{url}', #{ajax}, #{back}, #{noUpdate});

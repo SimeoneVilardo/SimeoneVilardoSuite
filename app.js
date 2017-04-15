@@ -105,6 +105,7 @@ app.use(flash());
 app.use('/', require('./routes/index.js'));
 app.use('/blog', require('./routes/blog.js'));
 app.use('/management', require('./routes/management.js'));
+app.use('/me', require('./routes/me.js'));
 require('./routes/auth.js')(app, passport);
 
 app.use(function (req, res, next) {

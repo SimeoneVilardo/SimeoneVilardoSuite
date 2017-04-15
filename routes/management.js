@@ -22,10 +22,6 @@ router.get('/users', securityHelper.isLogged, securityHelper.setAdmin, securityH
     });
 });
 
-router.get('/profile', securityHelper.isLogged, function (req, res, next) {
-    res.renderHybrid('management/profile');
-});
-
 router.get('/editpost', securityHelper.isLogged, securityHelper.setAdmin, securityHelper.isInRole, function (req, res, next) {
     dbHelper.findPost({_id: req.query.id}).then(function (post) {
         res.renderHybrid('management/post', {post: post});

@@ -69,6 +69,8 @@ securityHelper.generateToken = function () {
 };
 
 securityHelper.hasPermissionToEdit = function (currentUser, targetUser, newRole) {
+    if(currentUser.role <= config.roles.user.code && !currentUser._id.equals(targetUser._id))
+        return errorHelper.unauthorized('Permessi insufficienti');
     if(targetUser.role === config.roles.superadmin.code)
         return errorHelper.unauthorized('Impossibile modificare un superadmin');
     if(newRole > currentUser.role)
@@ -78,6 +80,8 @@ securityHelper.hasPermissionToEdit = function (currentUser, targetUser, newRole)
 };
 
 securityHelper.hasPermissionToDelete = function (currentUser, targetUser) {
+    if(currentUser.role <= config.roles.user.code && !currentUser._id.equals(targetUser._id))
+        return errorHelper.unauthorized('Permessi insufficienti');
     if(targetUser.role === config.roles.superadmin.code)
         return errorHelper.unauthorized('Impossibile eliminare un superadmin');
     if(targetUser.role > currentUser.role)

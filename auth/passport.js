@@ -66,7 +66,7 @@ module.exports = function (passport) {
         },
         function (req, username, password, done) {
             dbHelper.findUser({username: username}).then(function (user) {
-                if (!user)
+                if (!user || !user.password)
                     return done(null, false, req.flash('passportMessage', 'Utente non trovato'));
                 if (!securityHelper.checkPassword(password, user.password))
                     return done(null, false, req.flash('passportMessage', 'Password errata'));

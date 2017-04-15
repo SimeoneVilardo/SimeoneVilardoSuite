@@ -8,7 +8,7 @@ var http = require('http');
 var https = require('https');
 var config = require('../config.js');
 
-var port = normalizePort(process.env.PORT || config.express.port);
+var port = normalizePort(config.server.port);
 app.set('port', port);
 
 var server = https.createServer({
@@ -65,4 +65,4 @@ var redirectionServer = http.createServer(function(req, res) {
     res.end();
 });
 
-redirectionServer.listen(80);
+redirectionServer.listen(config.server.redirection_port);

@@ -38,12 +38,8 @@ jQuery(document).ready(function ($) {
     $.ajaxSetup({
         xhrFields: {
             onprogress: function (e) {
-                console.log('onprogress', e);
                 var percentage = Math.floor(e.loaded / e.total * 100);
                 nanobar.go(percentage);
-            },
-            onload: function (e) {
-                console.log('onload', e);
             }
         }
     });

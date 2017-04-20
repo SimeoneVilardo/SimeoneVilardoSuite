@@ -2,6 +2,7 @@
   .row
     .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
       form(action='/auth/local/login', method='post')
+        input(type='hidden', name='_csrf', value=_csrf)
         .form-horizontal
           h4 Login
           hr
@@ -20,9 +21,9 @@
                   i.fa.fa-sign-in
                   |  Accedi
               .col-md-offset-3.col-md-9
-                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/me/recover-password-request') Password dimenticata?
+                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/me/recover-password-request', data-ajax-csrf=_csrf) Password dimenticata?
               .col-md-offset-3.col-md-9
-                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/me/recover-username-request') Username dimenticato?
+                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/me/recover-username-request', data-ajax-csrf=_csrf) Username dimenticato?
             include ../alerts.pug
             +alerts(alert)
           .col-md-offset-1.col-md-2

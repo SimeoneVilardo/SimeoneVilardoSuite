@@ -13,6 +13,7 @@
         .tab-content
             #username-tab.tab-pane.active(role='tabpanel')
                 form(action='/me/change-username', method='post', style='margin-top:20px;')
+                    input(type='hidden', name='_csrf', value=_csrf)
                     .form-horizontal
                         .form-group
                             label.control-label.col-md-offset-2.col-md-10(style='text-align: left;') Modifica il tuo username
@@ -25,6 +26,7 @@
                                 input.btn.btn-default(type='submit', value='Conferma')
             #email-tab.tab-pane(role='tabpanel')
                 form(data-ajax='true', method='post', data-ajax-mode='replace', data-ajax-target='#body-content', action='/me/change-email', style='margin-top:20px;')
+                    input(type='hidden', name='_csrf', value=_csrf)
                     .form-horizontal
                         .form-group
                             label.control-label.col-md-offset-2.col-md-10(style='text-align: left;') Modifica il tuo indirizzo email
@@ -37,6 +39,7 @@
                                 input.btn.btn-default(type='submit', value='Conferma')
             #password-tab.tab-pane(role='tabpanel')
                 form(data-ajax='true', method='post', data-ajax-mode='replace', data-ajax-target='#body-content', action='/me/change-password', style='margin-top:20px;')
+                    input(type='hidden', name='_csrf', value=_csrf)
                     .form-horizontal
                         .form-group
                             label.control-label.col-md-offset-2.col-md-10(style='text-align: left;') Modifica la tua password

@@ -27,18 +27,18 @@
                                     td #{role.name}
                             td #{user.creationDate.toLocaleString('it-IT', { hour12: false })}
                             td
-                                a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/edituser?id=' + user._id)
+                                a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/edituser?id=' + user._id, data-ajax-csrf=_csrf)
                                     i.fa.fa-pencil.fa-lg
                             if user.role === roles.banned.code
                                 td
-                                    a.btn.btn-success(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href = '/management/unbanuser?id=' + user._id)
+                                    a.btn.btn-success(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', href = '/management/unbanuser?id=' + user._id, data-ajax-csrf=_csrf)
                                         i.fa.fa-check.fa-lg
                             else
                                 td
-                                    a.btn.btn-warning(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', data-ajax-confirm='Sei sicuro di voler bloccare l\'utente?', data-ajax-ok='Si', data-ajax-cancel='No', data-ajax-confirm-type='type-warning', href='/management/banuser?id=' + user._id)
+                                    a.btn.btn-warning(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', data-ajax-confirm='Sei sicuro di voler bloccare l\'utente?', data-ajax-ok='Si', data-ajax-cancel='No', data-ajax-confirm-type='type-warning', href='/management/banuser?id=' + user._id, data-ajax-csrf=_csrf)
                                         i.fa.fa-ban.fa-lg
                             td
-                                a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', data-ajax-confirm='Sei sicuro di voler eliminare l\'utente?', data-ajax-ok='Si', data-ajax-cancel='No', data-ajax-confirm-type='type-danger', href='/management/deleteuser?id=' + user._id)
+                                a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', data-ajax-confirm='Sei sicuro di voler eliminare l\'utente?', data-ajax-ok='Si', data-ajax-cancel='No', data-ajax-confirm-type='type-danger', href='/management/deleteuser?id=' + user._id, data-ajax-csrf=_csrf)
                                     i.fa.fa-trash-o.fa-lg
 script.
     updateBrowserData('Gestione utenti', '#{url}', #{ajax}, #{back}, #{noUpdate});

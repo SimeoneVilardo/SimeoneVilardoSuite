@@ -2,6 +2,7 @@
     .row
         .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
             form(data-ajax='true', method='post', data-ajax-mode='replace', data-ajax-target='#body-content', action='/me/recover-username')
+                input(type='hidden', name='_csrf', value=_csrf)
                 .form-horizontal
                     h4 Recupera username
                     hr

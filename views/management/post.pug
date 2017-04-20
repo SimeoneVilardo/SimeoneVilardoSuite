@@ -1,5 +1,6 @@
 .container
     form(data-ajax='true', method='post', data-ajax-mode='replace', data-ajax-target='#body-content', action= post && post._id ? '/management/editpost' : '/blog/newpost')
+        input(type='hidden', name='_csrf', value=_csrf)
         if post && post._id
             input(type='hidden', name='_id', value=post._id)
         .form-horizontal

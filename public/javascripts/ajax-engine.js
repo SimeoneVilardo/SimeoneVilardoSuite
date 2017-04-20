@@ -4,7 +4,7 @@ $(document).on('click', 'a[data-ajax*="true"]', function (e) {
     if (data.confirmData)
         ajaxRequestConfirmDialog(data.confirmData, data.ajaxData);
     else
-        ajaxRequest(data.ajaxData.method, data.ajaxData.mode, data.ajaxData.targetId, data.ajaxData.url);
+        ajaxRequest(data.ajaxData.method, data.ajaxData.mode, data.ajaxData.targetId, data.ajaxData.url,  data.ajaxData.data);
 });
 
 $(document).on('submit', 'form[data-ajax*="true"]', function (e) {
@@ -64,8 +64,9 @@ function getAjaxDataFromButton(sender) {
     var mode = sender.data('ajax-mode');
     var targetId = sender.data('ajax-target');
     var url = sender.attr('href');
+    var data = {_csrf : sender.data('ajax-csrf')};
     var confirmData = getConfirmData(sender);
-    var ajaxData = {method: method, mode: mode, targetId: targetId, url: url};
+    var ajaxData = {method: method, mode: mode, targetId: targetId, url: url, data: data};
     return {confirmData: confirmData, ajaxData: ajaxData};
 }
 

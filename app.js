@@ -13,6 +13,7 @@ bluebird.config({
 });
 mongoose.Promise = bluebird;
 var passport = require('passport');
+var csrf = require('csurf');
 var flash = require('connect-flash');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
@@ -98,6 +99,11 @@ app.use(session({
         expires: utilityHelper.createExpDate(1, utilityHelper.sizedate.week)
     }
 }));
+app.use(csrf());
+app.use(function(req, res, next) {
+    res.locals._csrf = req.csrfToken();
+    next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());

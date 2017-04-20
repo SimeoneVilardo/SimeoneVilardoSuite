@@ -23,27 +23,27 @@ html
                     ul.nav.navbar-nav.navbar-right
                         if !currentUser
                             li
-                                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/auth/login') Accedi
+                                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/auth/login', data-ajax-csrf=_csrf) Accedi
                             li
-                                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/auth/signup') Registrati
+                                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/auth/signup' , data-ajax-csrf=_csrf) Registrati
                         else
                             li
-                                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/me/profile') #{currentUser.username}
+                                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/me/profile', data-ajax-csrf=_csrf) #{currentUser.username}
                                 if currentUser.role >= roles.admin.code
                                     li
-                                        a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/posts') Gestisci Blog
+                                        a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/posts', data-ajax-csrf=_csrf) Gestisci Blog
                                     li
-                                        a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/users') Gestisci Utenti
+                                        a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/users', data-ajax-csrf=_csrf) Gestisci Utenti
                         li
-                            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/info') Informazioni
+                            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/info', data-ajax-csrf=_csrf) Informazioni
                         li
-                            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/contacts') Contattami
+                            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/contacts', data-ajax-csrf=_csrf) Contattami
                         li
-                            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/newpost') Scrivi Articolo
+                            a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/blog/newpost', data-ajax-csrf=_csrf) Scrivi Articolo
                         if currentUser
                             li
                                 a(href='/auth/logout') Esci
-        a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/')
+        a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/', data-ajax-csrf=_csrf)
             header.intro-header(style="background-image: url('/images/home-bg.jpg')")
                 .container
                     .row

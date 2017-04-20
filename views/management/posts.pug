@@ -24,16 +24,16 @@
                             td #{post.creationDate.toLocaleString('it-IT', { hour12: false })}
                             td
                                 if post.validation.validated
-                                    a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/disable?id=' + post._id)
+                                    a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/disable?id=' + post._id, data-ajax-csrf=_csrf)
                                         i.fa.fa-times.fa-lg
                                 else
-                                    a.btn.btn-success(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/validate?id=' + post._id)
+                                    a.btn.btn-success(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/validate?id=' + post._id, data-ajax-csrf=_csrf)
                                         i.fa.fa-check.fa-lgg
                             td
-                                a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/editpost?id=' + post._id)
+                                a.btn.btn-warning(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/management/editpost?id=' + post._id, data-ajax-csrf=_csrf)
                                     i.fa.fa-pencil.fa-lg
                             td
-                                a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', data-ajax-confirm='Sei sicuro di voler eliminare l\'articolo?', data-ajax-ok='Si', data-ajax-cancel='No', data-ajax-confirm-type='type-danger', href='/management/deletepost?id=' + post._id)
+                                a.btn.btn-danger(data-ajax='true', data-ajax-method='POST', data-ajax-mode='replace', data-ajax-target='#body-content', data-ajax-confirm='Sei sicuro di voler eliminare l\'articolo?', data-ajax-ok='Si', data-ajax-cancel='No', data-ajax-confirm-type='type-danger', href='/management/deletepost?id=' + post._id, data-ajax-csrf=_csrf)
                                     i.fa.fa-trash-o.fa-lg
 script.
     updateBrowserData('Gestione post', '#{url}', #{ajax}, #{back}, #{noUpdate});

@@ -1,4 +1,3 @@
-mixin alerts(alerts)
-    if alerts && alerts.length > 0
-        each alert in alerts
-            .alert.alert-danger #{alert}
+mixin alerts(alert)
+    if alert && alert.message && alert.message.length > 0
+        .alert(class=alert.type) #{alert.message}

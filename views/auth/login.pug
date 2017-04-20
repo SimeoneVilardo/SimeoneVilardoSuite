@@ -16,9 +16,15 @@
                 input#Password.form-control.text-box.single-line.password(name='password', type='password')
             .form-group
               .col-md-offset-3.col-md-9
-                input.btn.btn-default(type='submit', value='Accedi')
+                button.btn.btn-default(type='submit', value='Accedi')
+                  i.fa.fa-sign-in
+                  |  Accedi
+              .col-md-offset-3.col-md-9
+                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/me/recover-password-request') Password dimenticata?
+              .col-md-offset-3.col-md-9
+                a(data-ajax='true', data-ajax-method='GET', data-ajax-mode='replace', data-ajax-target='#body-content', href='/me/recover-username-request') Username dimenticato?
             include ../alerts.pug
-            +alerts(passportMessage)
+            +alerts(alert)
           .col-md-offset-1.col-md-2
             .btn-group-vertical
               a.btn.btn-primary(href='/auth/facebook', style='background-color:#3b5998')

@@ -41,7 +41,7 @@ dbHelper.createUser = function (user, options) {
 
 dbHelper.updateUser = function (query, update, currentUser, options) {
     return dbHelper.findUser(query, {role: 1, validation: 1}).then(function (user) {
-        if (!options || (!options.login && !options.validate)) {
+        if (!options || (!options.login && !options.validate && !options.resetPassword)) {
             var err = securityHelper.hasPermissionToEdit(currentUser, user, update.role);
             if (err)
                 throw err;
@@ -51,7 +51,7 @@ dbHelper.updateUser = function (query, update, currentUser, options) {
                 validated: update.validation.validated,
                 validationDate: update.validation.validated ? Date.now() : undefined
             };
-        if (update.hasOwnProperty('password') && (!options || !options.login)) {
+        if (update.hasOwnProperty('password') && (!options || !options.login || !options.resetPassword)) {
             if (utilityHelper.isEmpty(update.password) || update.password !== update.confirmPassword)
                 throw errorHelper.serverError('Le password non combaciano');
             else {

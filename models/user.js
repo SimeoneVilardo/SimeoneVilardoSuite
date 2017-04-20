@@ -1,6 +1,5 @@
 ﻿var mongoose = require('mongoose');
 var config = require('../config.js');
-var utilityHelper = require('../helpers/utility-helper.js');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
@@ -15,6 +14,10 @@ var userSchema = new Schema({
         validationDate: { type: Date }
     },
     validationToken: {
+        token: {type: String},
+        expirationDate: { type: Date }
+    },
+    recoverPasswordToken: {
         token: {type: String},
         expirationDate: { type: Date }
     },

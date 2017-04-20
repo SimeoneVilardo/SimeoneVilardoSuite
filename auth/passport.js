@@ -50,9 +50,9 @@ module.exports = function (passport) {
                     return [newUser, mailHelper.sendSignUp(newUser.username, newUser.email, newUser.validationToken.token)];
                 done(null, false, req.flash('passportMessage', 'Errore sconosciuto durante la registrazione'));
                 p.cancel();
-            }).spread(function (newUser, mailResult) {
-                if (mailResult && !mailResult.response.startsWith('250'))
-                    return done(null, false, req.flash('passportMessage', 'Errore nell\'invio della mail'));
+            }).spread(function (newUser, err) {
+                if (err)
+                    return done(null, false, req.flash('passportMessage', err.message));
                 return done(null, newUser);
             }).catch(function (err) {
                 return done(err);
